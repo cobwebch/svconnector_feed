@@ -1,0 +1,7 @@
+10-05-05 Roberto Presedo (Cobweb) <typo3@cobweb.ch>
+v 0.2.1
+	* Building lang object if not already builded
+
+10-03-24 Roberto Presedo (Cobweb)  <typo3@cobweb.ch>
+
+	* Released version 0.0.1
