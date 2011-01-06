@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Roberto Presedo (Cobweb) <typo3@cobweb.ch>
+*  (c) 2010 Francois Suter (Cobweb) <typo3@cobweb.ch>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,23 +23,15 @@
 *
 * $Id: class.tx_svconnectorfeed_sv1.php 15769 2009-01-17 17:27:13Z presedo $
 ***************************************************************/
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- * Hint: use extdeveval to insert/update function index above.
- */
-
-require_once(t3lib_extMgm::extPath('svconnector').'sv1/class.tx_svconnector_sv1.php');
-require_once(t3lib_extMgm::extPath('svconnector_feed').'lib/rss_php.php');
 
 /**
- * Service "CSV connector" for the "svconnector_feed" extension.
+ * Service that reads XML feeds for the "svconnector_feed" extension.
  *
- * @author	Francois Suter (Cobweb) <typo3@cobweb.ch>
- * @package	TYPO3
+ * @author		Francois Suter (Cobweb) <typo3@cobweb.ch>
+ * @package		TYPO3
  * @subpackage	tx_svconnectorfeed
  */
-class tx_svconnectorfeed_sv1 extends tx_svconnector_sv1 {
+class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 	public $prefixId = 'tx_svconnectorfeed_sv1';		// Same as class name
 	public $scriptRelPath = 'sv1/class.tx_svconnectorfeed_sv1.php';	// Path to this script relative to the extension dir.
 	public $extKey = 'svconnector_feed';	// The extension key.
@@ -63,22 +55,21 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_sv1 {
 			}
 		}
 		
-		$this->lang->includeLLFile('EXT:'.$this->extKey.'/sv1/locallang.xml');
+		$this->lang->includeLLFile('EXT:' . $this->extKey.'/sv1/locallang.xml');
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 		return true;
 	}
 
 	/**
 	 * This method calls the query method and returns the result as is,
-	 * i.e. the parsed CSV data, but without any additional work performed on it
+	 * i.e. the XML from the feed, but without any additional work performed on it
 	 *
 	 * @param	array	$parameters: parameters for the call
-	 *
 	 * @return	mixed	server response
 	 */
 	public function fetchRaw($parameters) {
 		$result = $this->query($parameters);
-		// Implement post-processing hook
+			// Implement post-processing hook
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processRaw'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processRaw'] as $className) {
 				$processor = &t3lib_div::getUserObj($className);
@@ -93,15 +84,12 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_sv1 {
 	 * This method calls the query and returns the results from the response as an XML structure
 	 *
 	 * @param	array	$parameters: parameters for the call
-	 *
 	 * @return	string	XML structure
 	 */
 	public function fetchXML($parameters) {
-		// Get the data as an array
-		$result = $this->fetchArray($parameters);
-		// Transform result to XML
-		$xml = t3lib_div::array2xml_cs($result);
-		// Implement post-processing hook
+			// Get the feed, which is already in XML
+		$xml = $this->query($parameters);
+			// Implement post-processing hook
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processXML'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processXML'] as $className) {
 				$processor = &t3lib_div::getUserObj($className);
@@ -122,6 +110,7 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_sv1 {
 	public function fetchArray($parameters) {
 			// Get the data from the file
 		$result = $this->query($parameters);
+		$result = tx_svconnector_utility::convertXmlToArray($result);
 
 		if (TYPO3_DLOG || $this->extConf['debug']) {
 			t3lib_div::devLog('Structured data', $this->extKey, -1, $result);
@@ -148,78 +137,40 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_sv1 {
 	 * @return	array	content of the feed
 	 */
 	protected function query($parameters) {
+		$data = '';
 
-
-		$fileData = '';
 		if (TYPO3_DLOG || $this->extConf['debug']) {
 			t3lib_div::devLog('Call parameters', $this->extKey, -1, $parameters);
 		}
- 		// Check if the feeds is defined
-		if (empty($parameters['feedurl'])) {
+	 		// Check if the feed's URI is defined
+		if (empty($parameters['uri'])) {
+			$message = $this->lang->getLL('no_feed_defined');
 			if (TYPO3_DLOG || $this->extConf['debug']) {
-				t3lib_div::devLog($this->lang->getLL('no_feed_defined'), $this->extKey, 3);
+				t3lib_div::devLog($message, $this->extKey, 3);
+			}
+			throw new Exception($message);
+		} else {
+			$report = array();
+			$data = t3lib_div::getURL($parameters['uri'], 0, FALSE, $report);
+			if (!empty($report['message'])) {
+				$message = sprintf($this->lang->getLL('feed_not_found'), $parameters['uri'], $report['message']);
+				if (TYPO3_DLOG || $this->extConf['debug']) {
+					t3lib_div::devLog($message, $this->extKey, 3,$report);
+				}
+				throw new Exception($message);
 			}
 		}
-		else {
 
-				// Load the XML feed and parse it
-			$RSS_PHP = new rss_php;
-			$RSS_PHP->load($parameters['feedurl']);
-				// Get feed items
-			$results_simple = $RSS_PHP->getItems();
-			
-				// If at leaste one attribute gets its value from a propertie, we load the full structure
-			if (isset($parameters['properties_values'])) {
-				$results_full = $RSS_PHP->getItems(true);
-				if (TYPO3_DLOG || $this->extConf['debug']) {
-					t3lib_div::devLog('Data from file (FULL)', $this->extKey, -1, $results_full);
-				}
-			}
-			else {
-				if (TYPO3_DLOG || $this->extConf['debug']) {
-					t3lib_div::devLog('Data from file', $this->extKey, -1, $results_simple);
-				}	
-			}
-			
-			$x=0;
-				// we define the values of each attribute
-			foreach($results_simple as $items => $infos) {
-				foreach ($infos as $attribute => $value) {
-						// We check if the value of the attribute must be found in a propertie
-					if (isset($parameters['properties_values'][$attribute])) {
-						$results[$x][$attribute] = $results_full[$x][$attribute]['properties'][$parameters['properties_values'][$attribute]];
-					}
-					else
-						$results[$x][$attribute] = $value;		
-					}
-					$x++;
-				}
-			}
-
-			// Checks if a minimal quantity of items has been found
-			if ($parameters['minimalQty'] > 0 && $x < $parameters['minimalQty']) {
-				if (TYPO3_DLOG || $this->extConf['debug']) t3lib_div::devLog(sprintf($this->lang->getLL('minimal_qty_not_reached'), $x, $parameters['minimalQty']), $this->extKey, 3);
-				$this->errorPush(T3_ERR_SV_BAD_RESPONSE,sprintf($this->lang->getLL('minimal_qty_not_reached'), $x, $parameters['minimalQty']));
-				die(sprintf($this->lang->getLL('minimal_qty_not_reached'), $x, $parameters['minimalQty']));
-			}
-
-/* @todo : MAKE AN ERROR IF FEED NO FOUND
-
-			if (TYPO3_DLOG || $this->extConf['debug']) {
-				t3lib_div::devLog(sprintf($this->lang->getLL('feed_not_found'), $parameters['feedurl']), $this->extKey, 3);
-			}
-*/
-
-		// Process the result if any hook is registered
+			// Process the result if any hook is registered
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processResponse'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processResponse'] as $className) {
 				$processor = &t3lib_div::getUserObj($className);
-				$results = $processor->processResponse($results, $this);
+				$data = $processor->processResponse($data, $this);
 			}
 		}
 
-		// Return the result
-		return $results;
+			// Return the result
+		return $data;
 	}
 }
 
@@ -228,5 +179,4 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_sv1 {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/svconnector_feed/sv1/class.tx_svconnectorfeed_sv1.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/svconnector_feed/sv1/class.tx_svconnectorfeed_sv1.php']);
 }
-
 ?>

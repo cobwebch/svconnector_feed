@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Connector service - FEED',
-	'description' => 'Connector service for RSS feeds',
+	'description' => 'Connector service for XML files or RSS feeds',
 	'category' => 'services',
 	'shy' => 0,
 	'version' => '0.2.1',
@@ -27,14 +27,15 @@ $EM_CONF[$_EXTKEY] = array(
 	'modify_tables' => '',
 	'clearcacheonload' => 1,
 	'lockType' => '',
-	'author' => 'Roberto Presedo (Cobweb)',
+	'author' => 'Francois Suter (Cobweb)',
 	'author_email' => 'typo3@cobweb.ch',
 	'author_company' => '',
 	'CGLcompliance' => '',
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
-			'svconnector' => '',
+			'typo3' => '4.3.0-0.0.0',
+			'svconnector' => '2.0.0-0.0.0',
 		),
 		'conflicts' => array(
 		),
