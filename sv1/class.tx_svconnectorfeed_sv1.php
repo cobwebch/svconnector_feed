@@ -49,13 +49,12 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 		if (!$this->lang) {
 			if (isset($GLOBALS['LANG'])) {
 				$this->lang = $GLOBALS['LANG'];
-			}
-			elseif (isset($GLOBALS['TSFE']->lang)) {
+			} elseif (isset($GLOBALS['TSFE']->lang)) {
 				$this->lang = $GLOBALS['TSFE']->lang;
 			}
 		}
-		
-		$this->lang->includeLLFile('EXT:' . $this->extKey.'/sv1/locallang.xml');
+
+		$this->lang->includeLLFile('EXT:' . $this->extKey . '/sv1/locallang.xml');
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 		return true;
 	}
@@ -96,7 +95,7 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 				$xml = $processor->processXML($xml, $this);
 			}
 		}
-		
+
 		return $xml;
 	}
 
@@ -155,7 +154,7 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 			if (!empty($report['message'])) {
 				$message = sprintf($this->lang->getLL('feed_not_found'), $parameters['uri'], $report['message']);
 				if (TYPO3_DLOG || $this->extConf['debug']) {
-					t3lib_div::devLog($message, $this->extKey, 3,$report);
+					t3lib_div::devLog($message, $this->extKey, 3, $report);
 				}
 				throw new Exception($message);
 			}
