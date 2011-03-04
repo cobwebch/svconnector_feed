@@ -39,21 +39,13 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 
 	/**
 	 * Verifies that the connection is functional
-	 * In the case of CSV, it is always the case
+	 * In the case of this service, it is always the case
 	 * It might fail for a specific file, but it is always available in general
 	 *
 	 * @return	boolean		TRUE if the service is available
 	 */
 	public function init() {
 		parent::init();
-		if (!$this->lang) {
-			if (isset($GLOBALS['LANG'])) {
-				$this->lang = $GLOBALS['LANG'];
-			} elseif (isset($GLOBALS['TSFE']->lang)) {
-				$this->lang = $GLOBALS['TSFE']->lang;
-			}
-		}
-
 		$this->lang->includeLLFile('EXT:' . $this->extKey . '/sv1/locallang.xml');
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 		return true;
@@ -136,7 +128,6 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 	 * @return	array	content of the feed
 	 */
 	protected function query($parameters) {
-		$data = '';
 
 		if (TYPO3_DLOG || $this->extConf['debug']) {
 			t3lib_div::devLog('Call parameters', $this->extKey, -1, $parameters);
@@ -147,7 +138,7 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 			if (TYPO3_DLOG || $this->extConf['debug']) {
 				t3lib_div::devLog($message, $this->extKey, 3);
 			}
-			throw new Exception($message);
+			throw new Exception($message, 1299257883);
 		} else {
 			$report = array();
 			$data = t3lib_div::getURL($parameters['uri'], 0, FALSE, $report);
@@ -156,7 +147,21 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 				if (TYPO3_DLOG || $this->extConf['debug']) {
 					t3lib_div::devLog($message, $this->extKey, 3, $report);
 				}
-				throw new Exception($message);
+				throw new Exception($message, 1299257894);
+			}
+				// Check if the current charset is the same as the file encoding
+				// Don't do the check if no encoding was defined
+				// TODO: add automatic encoding detection by the reading the encoding attribute in the XML header
+			if (empty($parameters['encoding'])) {
+				$isSameCharset = TRUE;
+			} else {
+					// Standardize charset name and compare
+				$encoding = $this->lang->csConvObj->parse_charset($parameters['encoding']);
+				$isSameCharset = $this->lang->charSet == $encoding;
+			}
+				// If the charset is not the same, convert data
+			if (!$isSameCharset) {
+				$data = $this->lang->csConvObj->conv($data, $encoding, $this->lang->charSet);
 			}
 		}
 
