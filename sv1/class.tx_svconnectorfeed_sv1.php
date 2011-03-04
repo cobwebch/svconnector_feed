@@ -160,6 +160,9 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 				$isSameCharset = $this->lang->charSet == $encoding;
 			}
 				// If the charset is not the same, convert data
+				// NOTE: example values for testing conversion:
+				//		uri = http://www.rususa.com/tools/rss/feed.asp-rss-newsrus
+				//		encoding = windows-1251
 			if (!$isSameCharset) {
 				$data = $this->lang->csConvObj->conv($data, $encoding, $this->lang->charSet);
 			}
