@@ -1,6 +1,7 @@
 2011-09-14 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
 	* Added option for faking user agent, resolves #29767
+	* Released version 1.1.0
 
 2011-03-08 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 

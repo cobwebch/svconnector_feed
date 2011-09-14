@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "svconnector_feed".
 #
-# Auto generated 08-03-2011 22:16
+# Auto generated 14-09-2011 09:18
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next
@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Connector service for XML files or RSS feeds',
 	'category' => 'services',
 	'shy' => 0,
-	'version' => '1.0.0',
+	'version' => '1.1.0',
 	'dependencies' => 'svconnector',
 	'conflicts' => '',
 	'priority' => '',
@@ -42,7 +42,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'suggests' => array(
 		),
 	),
-	'_md5_values_when_last_written' => 'a:10:{s:9:"ChangeLog";s:4:"31e2";s:10:"README.txt";s:4:"4f8f";s:16:"ext_autoload.php";s:4:"c230";s:21:"ext_conf_template.txt";s:4:"ef02";s:12:"ext_icon.gif";s:4:"d043";s:17:"ext_localconf.php";s:4:"cb19";s:14:"doc/manual.pdf";s:4:"68e0";s:14:"doc/manual.sxw";s:4:"1539";s:36:"sv1/class.tx_svconnectorfeed_sv1.php";s:4:"5f37";s:17:"sv1/locallang.xml";s:4:"c67c";}',
+	'_md5_values_when_last_written' => 'a:10:{s:9:"ChangeLog";s:4:"0df3";s:10:"README.txt";s:4:"4f8f";s:16:"ext_autoload.php";s:4:"c230";s:21:"ext_conf_template.txt";s:4:"ef02";s:12:"ext_icon.gif";s:4:"d043";s:17:"ext_localconf.php";s:4:"cb19";s:14:"doc/manual.pdf";s:4:"045f";s:14:"doc/manual.sxw";s:4:"d483";s:36:"sv1/class.tx_svconnectorfeed_sv1.php";s:4:"2a34";s:17:"sv1/locallang.xml";s:4:"c67c";}',
 	'suggests' => array(
 	),
 );
