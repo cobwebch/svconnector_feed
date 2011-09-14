@@ -141,7 +141,12 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 			throw new Exception($message, 1299257883);
 		} else {
 			$report = array();
-			$data = t3lib_div::getURL($parameters['uri'], 0, FALSE, $report);
+			$headers = FALSE;
+			if (isset($parameters['useragent'])) {
+				$headers = array('User-Agent: ' . $parameters['useragent']);
+			}
+
+			$data = t3lib_div::getURL($parameters['uri'], 0, $headers, $report);
 			if (!empty($report['message'])) {
 				$message = sprintf($this->lang->getLL('feed_not_found'), $parameters['uri'], $report['message']);
 				if (TYPO3_DLOG || $this->extConf['debug']) {
