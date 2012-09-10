@@ -20,8 +20,6 @@
 *  GNU General Public License for more details.
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
-*
-* $Id: class.tx_svconnectorfeed_sv1.php 15769 2009-01-17 17:27:13Z presedo $
 ***************************************************************/
 
 /**
@@ -30,6 +28,8 @@
  * @author		Francois Suter (Cobweb) <typo3@cobweb.ch>
  * @package		TYPO3
  * @subpackage	tx_svconnectorfeed
+ *
+ * $Id$
  */
 class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 	public $prefixId = 'tx_svconnectorfeed_sv1';		// Same as class name
