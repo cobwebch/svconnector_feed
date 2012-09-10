@@ -11,7 +11,7 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="no_feed_defined">No RSS feed has been defined.</label>
-			<label index="feed_not_fetched">Feed %$1s could not be fetched with error: %2$s</label>
+			<label index="feed_not_fetched">Feed %1$s could not be fetched with error: %2$s</label>
 		</languageKey>
 	</data>
 </T3locallang>

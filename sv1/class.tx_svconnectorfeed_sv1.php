@@ -121,11 +121,12 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 	 * This method reads the content of the XML feed defined in the parameters
 	 * and returns it as an array
 	 *
-	 * NOTE:	this method does not implement the "processParameters" hook,
-	 *			as it does not make sense in this case
+	 * NOTE:    this method does not implement the "processParameters" hook,
+	 *          as it does not make sense in this case
 	 *
-	 * @param	array	$parameters: parameters for the call
-	 * @return	array	content of the feed
+	 * @param array $parameters Parameters for the call
+	 * @throws Exception
+	 * @return array Content of the feed
 	 */
 	protected function query($parameters) {
 
@@ -148,7 +149,7 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 
 			$data = t3lib_div::getURL($parameters['uri'], 0, $headers, $report);
 			if (!empty($report['message'])) {
-				$message = sprintf($this->lang->getLL('feed_not_found'), $parameters['uri'], $report['message']);
+				$message = sprintf($this->lang->getLL('feed_not_fetched'), $parameters['uri'], $report['message']);
 				if (TYPO3_DLOG || $this->extConf['debug']) {
 					t3lib_div::devLog($message, $this->extKey, 3, $report);
 				}
