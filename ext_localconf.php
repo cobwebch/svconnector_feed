@@ -18,7 +18,7 @@ t3lib_extMgm::addService($_EXTKEY,  'connector' /* sv type */,  'tx_svconnectorf
 			'os' => '',
 			'exec' => '',
 
-			'classFile' => t3lib_extMgm::extPath($_EXTKEY).'sv1/class.tx_svconnectorfeed_sv1.php',
+			'classFile' => t3lib_extMgm::extPath($_EXTKEY) . 'sv1/class.tx_svconnectorfeed_sv1.php',
 			'className' => 'tx_svconnectorfeed_sv1',
 		)
 	);
