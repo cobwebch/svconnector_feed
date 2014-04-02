@@ -30,22 +30,22 @@ $EM_CONF[$_EXTKEY] = array (
   'author_company' => '',
   'CGLcompliance' => '',
   'CGLcompliance_note' => '',
-  'constraints' => 
+  'constraints' =>
   array (
-    'depends' => 
+    'depends' =>
     array (
-      'typo3' => '4.5.0-6.1.99',
+      'typo3' => '4.5.0-6.2.99',
       'svconnector' => '2.2.0-0.0.0',
     ),
-    'conflicts' => 
+    'conflicts' =>
     array (
     ),
-    'suggests' => 
+    'suggests' =>
     array (
     ),
   ),
   '_md5_values_when_last_written' => 'a:11:{s:9:"ChangeLog";s:4:"fad3";s:16:"ext_autoload.php";s:4:"c230";s:21:"ext_conf_template.txt";s:4:"ef02";s:12:"ext_icon.gif";s:4:"d043";s:17:"ext_localconf.php";s:4:"b595";s:10:"README.txt";s:4:"4f8f";s:42:"Resources/Public/Samples/Configuration.txt";s:4:"d799";s:14:"doc/manual.pdf";s:4:"011d";s:14:"doc/manual.sxw";s:4:"6a50";s:36:"sv1/class.tx_svconnectorfeed_sv1.php";s:4:"02f3";s:17:"sv1/locallang.xml";s:4:"a236";}',
-  'suggests' => 
+  'suggests' =>
   array (
   ),
   'comment' => 'Verified compatibility with TYPO3 CMS 6.1',
