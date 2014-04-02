@@ -1,2 +1,2 @@
 uri = http://www.rususa.com/tools/rss/feed.asp-rss-newsrus
-encoding = windows-1251
+encoding = utf-8
