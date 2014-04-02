@@ -46,7 +46,6 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 	 */
 	public function init() {
 		parent::init();
-		$this->lang->includeLLFile('EXT:' . $this->extKey . '/sv1/locallang.xml');
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 		return true;
 	}
@@ -135,7 +134,7 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 		}
 	 		// Check if the feed's URI is defined
 		if (empty($parameters['uri'])) {
-			$message = $this->lang->getLL('no_feed_defined');
+			$message = $this->sL('LLL:EXT:' . $this->extKey . '/sv1/locallang.xml:no_feed_defined');
 			if (TYPO3_DLOG || $this->extConf['debug']) {
 				t3lib_div::devLog($message, $this->extKey, 3);
 			}
@@ -149,7 +148,11 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 
 			$data = t3lib_div::getURL($parameters['uri'], 0, $headers, $report);
 			if (!empty($report['message'])) {
-				$message = sprintf($this->lang->getLL('feed_not_fetched'), $parameters['uri'], $report['message']);
+				$message = sprintf(
+					$this->sL('LLL:EXT:' . $this->extKey . '/sv1/locallang.xml:feed_not_fetched'),
+					$parameters['uri'],
+					$report['message']
+				);
 				if (TYPO3_DLOG || $this->extConf['debug']) {
 					t3lib_div::devLog($message, $this->extKey, 3, $report);
 				}
@@ -162,15 +165,12 @@ class tx_svconnectorfeed_sv1 extends tx_svconnector_base {
 				$isSameCharset = TRUE;
 			} else {
 					// Standardize charset name and compare
-				$encoding = $this->lang->csConvObj->parse_charset($parameters['encoding']);
-				$isSameCharset = $this->lang->charSet == $encoding;
+				$encoding = $this->getCharsetConverter()->parse_charset($parameters['encoding']);
+				$isSameCharset = $this->getCharset() == $encoding;
 			}
-				// If the charset is not the same, convert data
-				// NOTE: example values for testing conversion:
-				//		uri = http://www.rususa.com/tools/rss/feed.asp-rss-newsrus
-				//		encoding = windows-1251
+			// If the charset is not the same, convert data
 			if (!$isSameCharset) {
-				$data = $this->lang->csConvObj->conv($data, $encoding, $this->lang->charSet);
+				$data = $this->getCharsetConverter()->conv($data, $encoding, $this->getCharset());
 			}
 		}
 
