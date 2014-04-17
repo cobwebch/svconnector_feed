@@ -35,6 +35,15 @@ parameters:
 |                 |               | Note that this means pretty much all the usual encodings.             |
 |                 |               | If unsure look at array                                               |
 |                 |               | :code:`\TYPO3\CMS\Core\Charset\CharsetConverter::synonyms`.           |
+|                 |               |                                                                       |
+|                 |               | .. warning::                                                          |
+|                 |               |                                                                       |
+|                 |               |    If your are aiming for the array format (i.e. calling              |
+|                 |               |    :code:`fetchArray()`, you should not define this property. Indeed  |
+|                 |               |    the :code:`\tx_svconnector_utility::convertXmlToArray()` which is  |
+|                 |               |    used in this case relies on the SimpleXML library, which already   |
+|                 |               |    takes care of the encoding conversion. To avoid a double encoding  |
+|                 |               |    just ignore this property.                                         |
 +-----------------+---------------+-----------------------------------------------------------------------+
 | useragent       | string        | User agent to fake. This is sometimes necessary to bypass access      |
 |                 |               | restrictions on some sites. Don't include the "User-Agent:" part of   |
