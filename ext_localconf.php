@@ -3,9 +3,13 @@ if (!defined ('TYPO3_MODE')) {
  	die ('Access denied.');
 }
 
-t3lib_extMgm::addService($_EXTKEY,  'connector' /* sv type */,  'tx_svconnectorfeed_sv1' /* sv key */,
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+		$_EXTKEY,
+        // Service type
+        'connector',
+        // Service key
+        'tx_svconnectorfeed_sv1',
 		array(
-
 			'title' => 'RSS Feed connector',
 			'description' => 'Connector service to get RSS feeds',
 
@@ -18,8 +22,6 @@ t3lib_extMgm::addService($_EXTKEY,  'connector' /* sv type */,  'tx_svconnectorf
 			'os' => '',
 			'exec' => '',
 
-			'classFile' => t3lib_extMgm::extPath($_EXTKEY) . 'sv1/class.tx_svconnectorfeed_sv1.php',
-			'className' => 'tx_svconnectorfeed_sv1',
+			'className' => \Cobweb\SvconnectorFeed\Service\ConnectorFeed::class,
 		)
-	);
-?>
+);
