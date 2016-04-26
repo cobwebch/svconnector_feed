@@ -1,0 +1,28 @@
+{
+	"name": "cobweb/svconnector_feed",
+	"type": "typo3-cms-extension",
+	"description": "Connector service for XML files or RSS feeds",
+	"license": [
+		"GPL-2.0+"
+	],
+	"authors": [
+		{
+			"name": "Francois Suter",
+			"role": "Developer"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Cobweb\\SvconnectorFeed\\": "Classes/"
+		}
+	},
+	"version": "2.0.0",
+	"require": {
+		"typo3/cms-core": ">=7.6.0,<8.0",
+		"cobweb/svconnector": ">=3.0.0"
+	},
+	"replace": {
+		"svconnector_feed": "self.version",
+		"typo3-ter/svconnector_feed": "self.version"
+	}
+}
