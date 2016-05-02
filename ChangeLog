@@ -1,3 +1,7 @@
+2016-05-02 Francois Suter (Cobweb)  <typo3@cobweb.ch>
+
+	* Released version 2.0.0, resolves #76005
+
 2016-04-25 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
 	* Refactored for TYPO3 CMS 7, resolves #75926

@@ -39,7 +39,7 @@ in return. For example:
 .. code-block:: php
 
 	$parameters = array(
-		'uri' => 'http://news.typo3.org/atom.xml',
+		'uri' => 'https://typo3.org/xml-feeds/rss.xml',
 		'encoding' => 'utf-8',
 	);
 	$data = $connector->fetchXML($parameters);
@@ -47,6 +47,6 @@ in return. For example:
 This will return the XML from the feed as a string. The :code:`fetchRaw()` will return the same.
 
 The :code:`fetchArray()` method returns an array version of the XML
-transformed using :code:`\tx_svconnector_utility::convertXmlToArray()`.
+transformed using :code:`\Cobweb\Svconnector\Utility\ConnectorUtility::convertXmlToArray()`.
 The returned array has a rather complex structure,
 but it ensures that no information is lost.
