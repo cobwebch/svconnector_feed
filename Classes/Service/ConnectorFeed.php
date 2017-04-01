@@ -155,7 +155,7 @@ class ConnectorFeed extends ConnectorBase
                     $headers,
                     $report
             );
-            if (!empty($report['message'])) {
+            if ($data === false) {
                 $message = sprintf(
                         $this->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:feed_not_fetched'),
                         $parameters['uri'],

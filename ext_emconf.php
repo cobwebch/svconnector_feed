@@ -20,17 +20,17 @@ $EM_CONF[$_EXTKEY] = array (
   'author' => 'Francois Suter (Cobweb)',
   'author_email' => 'typo3@cobweb.ch',
   'author_company' => '',
-  'constraints' => 
+  'constraints' =>
   array (
-    'depends' => 
+    'depends' =>
     array (
-      'typo3' => '7.6.0-7.99.99',
+      'typo3' => '7.6.0-8.99.99',
       'svconnector' => '3.0.0-0.0.0',
     ),
-    'conflicts' => 
+    'conflicts' =>
     array (
     ),
-    'suggests' => 
+    'suggests' =>
     array (
     ),
   ),
