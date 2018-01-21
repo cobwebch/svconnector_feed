@@ -27,7 +27,7 @@ Feed/XML Connector Service
 		  xml, rss, feed, data import, fetch data
 
 	:Copyright:
-		2010-2017
+		2010-2018
 
 	:Author:
 		  François Suter (Cobweb)

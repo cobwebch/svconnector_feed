@@ -17,17 +17,18 @@ parameters:
 +-----------------+---------------+-------------------------------------------------------------------------------+
 | Parameter       | Data type     | Description                                                                   |
 +=================+===============+===============================================================================+
-| uri             | string        | URI of the XML file to read. This may be local or remote.                     |
+| uri             | string        | URI of the XML file to read. This may any of the following syntaxes:          |
 |                 |               |                                                                               |
-|                 |               | |                                                                             |
-|                 |               |                                                                               |
-|                 |               | **Examples:**                                                                 |
-|                 |               |                                                                               |
-|                 |               | https://typo3.org/xml-feeds/rss.xml                                           |
-|                 |               |                                                                               |
-|                 |               | EXT:myext/res/some.xml                                                        |
-|                 |               |                                                                               |
-|                 |               | fileadmin/imports/some.xml                                                    |
+|                 |               | - absolute file path: :file:`/var/foo/web/fileadmin/import/bar.csv`           |
+|                 |               | - file path relative to the TYPO3 root:                                       |
+|                 |               |   :file:`fileadmin/import/foo.csv`                                            |
+|                 |               | - file path using :code:`EXT:`:                                               |
+|                 |               |   :file:`EXT:foo/Resources/Private/Data/bar.csv`                              |
+|                 |               | - fully qualified URL, e.g. :file:`http://www.example.com/foo.csv`            |
+|                 |               | - FAL reference with storage ID and file identifier:                          |
+|                 |               |   :file:`FAL:2:/foo.csv`                                                      |
+|                 |               | - custom syntax: :file:`MYKEY:whatever_you_want`, see                         |
+|                 |               |   :ref:`Connector Services <svconnector:developers-utilities-reading-files>`  |
 +-----------------+---------------+-------------------------------------------------------------------------------+
 | encoding        | string        | Encoding of the data found in the file. This value must match any of          |
 |                 |               | the encoding values or their synonyms found in class                          |

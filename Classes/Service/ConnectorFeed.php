@@ -17,6 +17,7 @@ namespace Cobweb\SvconnectorFeed\Service;
 use Cobweb\Svconnector\Exception\SourceErrorException;
 use Cobweb\Svconnector\Service\ConnectorBase;
 use Cobweb\Svconnector\Utility\ConnectorUtility;
+use Cobweb\Svconnector\Utility\FileUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -116,15 +117,14 @@ class ConnectorFeed extends ConnectorBase
     }
 
     /**
-     * This method reads the content of the XML feed defined in the parameters
-     * and returns it as an array
+     * Reads the content of the XML feed defined in the parameter and returns it as an array.
      *
-     * NOTE:    this method does not implement the "processParameters" hook,
-     *          as it does not make sense in this case
+     * NOTE: This method does not implement the "processParameters" hook, as it does not make sense in this case.
      *
      * @param array $parameters Parameters for the call
-     * @throws SourceErrorException
      * @return array Content of the feed
+     * @throws SourceErrorException
+     * @throws \Exception
      */
     protected function query($parameters)
     {
@@ -134,7 +134,7 @@ class ConnectorFeed extends ConnectorBase
         }
         // Check if the feed's URI is defined
         if (empty($parameters['uri'])) {
-            $message = $this->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:no_feed_defined');
+            $message = $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:no_feed_defined');
             if (TYPO3_DLOG || $this->extConf['debug']) {
                 GeneralUtility::devLog($message, $this->extKey, 3);
             }
@@ -142,48 +142,43 @@ class ConnectorFeed extends ConnectorBase
                     $message,
                     1299257883
             );
-        } else {
-            $report = array();
-            $headers = false;
-            if (array_key_exists('useragent', $parameters)) {
-                $headers = array('User-Agent: ' . $parameters['useragent']);
-            }
+        }
 
-            $data = GeneralUtility::getUrl(
+        $headers = [];
+        if (array_key_exists('useragent', $parameters)) {
+            $headers = array('User-Agent: ' . $parameters['useragent']);
+        }
+
+        $fileUtility = GeneralUtility::makeInstance(FileUtility::class);
+        $data = $fileUtility->getFileContent($parameters['uri'], $headers);
+        if ($data === false) {
+            $message = sprintf(
+                    $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:feed_not_fetched'),
                     $parameters['uri'],
-                    0,
-                    $headers,
-                    $report
+                    $fileUtility->getError()
             );
-            if ($data === false) {
-                $message = sprintf(
-                        $this->sL('LLL:EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf:feed_not_fetched'),
-                        $parameters['uri'],
-                        $report['message']
-                );
-                if (TYPO3_DLOG || $this->extConf['debug']) {
-                    GeneralUtility::devLog($message, $this->extKey, 3, $report);
-                }
-                throw new SourceErrorException(
-                        $message,
-                        1299257894
-                );
+            if (TYPO3_DLOG || $this->extConf['debug']) {
+                GeneralUtility::devLog($message, $this->extKey, 3);
             }
-            // Check if the current charset is the same as the file encoding
-            // Don't do the check if no encoding was defined
-            // TODO: add automatic encoding detection by the reading the encoding attribute in the XML header
-            if (empty($parameters['encoding'])) {
-                $encoding = '';
-                $isSameCharset = true;
-            } else {
-                // Standardize charset name and compare
-                $encoding = $this->getCharsetConverter()->parse_charset($parameters['encoding']);
-                $isSameCharset = $this->getCharset() === $encoding;
-            }
-            // If the charset is not the same, convert data
-            if (!$isSameCharset) {
-                $data = $this->getCharsetConverter()->conv($data, $encoding, $this->getCharset());
-            }
+            throw new SourceErrorException(
+                    $message,
+                    1299257894
+            );
+        }
+        // Check if the current charset is the same as the file encoding
+        // Don't do the check if no encoding was defined
+        // TODO: add automatic encoding detection by the reading the encoding attribute in the XML header
+        if (empty($parameters['encoding'])) {
+            $encoding = '';
+            $isSameCharset = true;
+        } else {
+            // Standardize charset name and compare
+            $encoding = $this->getCharsetConverter()->parse_charset($parameters['encoding']);
+            $isSameCharset = $this->getCharset() === $encoding;
+        }
+        // If the charset is not the same, convert data
+        if (!$isSameCharset) {
+            $data = $this->getCharsetConverter()->conv($data, $encoding, $this->getCharset());
         }
 
         // Process the result if any hook is registered
