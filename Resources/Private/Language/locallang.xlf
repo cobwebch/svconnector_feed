@@ -4,10 +4,10 @@
 		<header/>
 		<body>
 			<trans-unit id="no_feed_defined" xml:space="preserve">
-				<source>No RSS feed has been defined.</source>
+				<source>No URI has been defined for the XML file.</source>
 			</trans-unit>
 			<trans-unit id="feed_not_fetched" xml:space="preserve">
-				<source>Feed %1$s could not be fetched with error: %2$s</source>
+				<source>XML file %1$s could not be fetched with error: %2$s</source>
 			</trans-unit>
 		</body>
 	</file>

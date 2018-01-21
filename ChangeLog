@@ -1,6 +1,7 @@
 2018-01-19 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
 	* Used new FileUtility for reading files, resolves #4
+	* Improved localised error strings, resolves #1
 
 2017-04-05 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
