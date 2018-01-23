@@ -17,16 +17,16 @@ parameters:
 +-----------------+---------------+-------------------------------------------------------------------------------+
 | Parameter       | Data type     | Description                                                                   |
 +=================+===============+===============================================================================+
-| uri             | string        | URI of the XML file to read. This may any of the following syntaxes:          |
+| uri             | string        | URI of the XML file to read. This may be any of the following syntaxes:       |
 |                 |               |                                                                               |
-|                 |               | - absolute file path: :file:`/var/foo/web/fileadmin/import/bar.csv`           |
+|                 |               | - absolute file path: :file:`/var/foo/web/fileadmin/import/bar.xml`           |
 |                 |               | - file path relative to the TYPO3 root:                                       |
-|                 |               |   :file:`fileadmin/import/foo.csv`                                            |
+|                 |               |   :file:`fileadmin/import/foo.xml`                                            |
 |                 |               | - file path using :code:`EXT:`:                                               |
-|                 |               |   :file:`EXT:foo/Resources/Private/Data/bar.csv`                              |
-|                 |               | - fully qualified URL, e.g. :file:`http://www.example.com/foo.csv`            |
+|                 |               |   :file:`EXT:foo/Resources/Private/Data/bar.xml`                              |
+|                 |               | - fully qualified URL, e.g. :file:`http://www.example.com/foo.xml`            |
 |                 |               | - FAL reference with storage ID and file identifier:                          |
-|                 |               |   :file:`FAL:2:/foo.csv`                                                      |
+|                 |               |   :file:`FAL:2:/foo.xml`                                                      |
 |                 |               | - custom syntax: :file:`MYKEY:whatever_you_want`, see                         |
 |                 |               |   :ref:`Connector Services <svconnector:developers-utilities-reading-files>`  |
 +-----------------+---------------+-------------------------------------------------------------------------------+

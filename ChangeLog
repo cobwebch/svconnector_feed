@@ -1,3 +1,7 @@
+2018-01-23 Francois Suter (Cobweb)  <typo3@cobweb.ch>
+
+	* Released version 2.2.0
+
 2018-01-19 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
 	* Used new FileUtility for reading files, resolves #4
