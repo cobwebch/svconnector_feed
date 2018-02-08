@@ -144,7 +144,7 @@ class ConnectorFeed extends ConnectorBase
             );
         }
 
-        $headers = [];
+        $headers = null;
         if (array_key_exists('useragent', $parameters)) {
             $headers = array('User-Agent: ' . $parameters['useragent']);
         }
