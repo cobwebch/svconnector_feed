@@ -14,7 +14,7 @@ $EM_CONF[$_EXTKEY] = array (
   'title' => 'Connector service - XML Feed',
   'description' => 'Connector service for XML files or RSS feeds',
   'category' => 'services',
-  'version' => '2.2.0',
+  'version' => '2.2.1',
   'state' => 'stable',
   'uploadfolder' => 0,
   'createDirs' => '',
@@ -27,7 +27,7 @@ $EM_CONF[$_EXTKEY] = array (
     'depends' =>
     array (
       'typo3' => '7.6.0-8.99.99',
-      'svconnector' => '3.2.0-0.0.0',
+      'svconnector' => '3.2.3-0.0.0',
     ),
     'conflicts' =>
     array (
