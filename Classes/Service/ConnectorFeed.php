@@ -31,8 +31,7 @@ class ConnectorFeed extends ConnectorBase
 {
     public $prefixId = 'tx_svconnectorfeed_sv1';        // Same as class name
     public $scriptRelPath = 'sv1/class.tx_svconnectorfeed_sv1.php';    // Path to this script relative to the extension dir.
-    public $extKey = 'svconnector_feed';    // The extension key.
-    protected $extConf; // Extension configuration
+    public $extensionKey = 'svconnector_feed';    // The extension key.
 
     /**
      * Verifies that the connection is functional
@@ -41,10 +40,9 @@ class ConnectorFeed extends ConnectorBase
      *
      * @return boolean TRUE if the service is available
      */
-    public function init()
+    public function init(): bool
     {
         parent::init();
-        $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
         return true;
     }
 
@@ -54,14 +52,15 @@ class ConnectorFeed extends ConnectorBase
      *
      * @param array $parameters Parameters for the call
      * @return mixed Server response
+     * @throws \Exception
      */
     public function fetchRaw($parameters)
     {
         $result = $this->query($parameters);
         // Implement post-processing hook
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processRaw'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processRaw'] as $className) {
-                $processor = GeneralUtility::getUserObj($className);
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] as $className) {
+                $processor = GeneralUtility::makeInstance($className);
                 $result = $processor->processRaw($result, $this);
             }
         }
@@ -74,15 +73,16 @@ class ConnectorFeed extends ConnectorBase
      *
      * @param array $parameters Parameters for the call
      * @return string XML structure
+     * @throws \Exception
      */
-    public function fetchXML($parameters)
+    public function fetchXML($parameters): string
     {
         // Get the feed, which is already in XML
         $xml = $this->query($parameters);
         // Implement post-processing hook
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processXML'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processXML'] as $className) {
-                $processor = GeneralUtility::getUserObj($className);
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] as $className) {
+                $processor = GeneralUtility::makeInstance($className);
                 $xml = $processor->processXML($xml, $this);
             }
         }
@@ -95,21 +95,20 @@ class ConnectorFeed extends ConnectorBase
      *
      * @param array $parameters Parameters for the call
      * @return array PHP array
+     * @throws \Exception
      */
-    public function fetchArray($parameters)
+    public function fetchArray($parameters): array
     {
         // Get the data from the file
         $result = $this->query($parameters);
         $result = ConnectorUtility::convertXmlToArray($result);
 
-        if (TYPO3_DLOG || $this->extConf['debug']) {
-            GeneralUtility::devLog('Structured data', $this->extKey, -1, $result);
-        }
+        $this->logger->info('Structured data', $result);
 
         // Implement post-processing hook
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processArray'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processArray'] as $className) {
-                $processor = GeneralUtility::getUserObj($className);
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] as $className) {
+                $processor = GeneralUtility::makeInstance($className);
                 $result = $processor->processArray($result, $this);
             }
         }
@@ -122,25 +121,21 @@ class ConnectorFeed extends ConnectorBase
      * NOTE: This method does not implement the "processParameters" hook, as it does not make sense in this case.
      *
      * @param array $parameters Parameters for the call
-     * @return array Content of the feed
-     * @throws SourceErrorException
+     * @return mixed Content of the feed
      * @throws \Exception
      */
     protected function query($parameters)
     {
 
-        if (TYPO3_DLOG || $this->extConf['debug']) {
-            GeneralUtility::devLog('Call parameters', $this->extKey, -1, $parameters);
-        }
+        $this->logger->info('Call parameters', $parameters);
         // Check if the feed's URI is defined
         if (empty($parameters['uri'])) {
             $message = $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:no_feed_defined');
-            if (TYPO3_DLOG || $this->extConf['debug']) {
-                GeneralUtility::devLog($message, $this->extKey, 3);
-            }
-            throw new SourceErrorException(
+            $this->raiseError(
                     $message,
-                    1299257883
+                    1299257883,
+                    [],
+                    SourceErrorException::class
             );
         }
 
@@ -157,17 +152,16 @@ class ConnectorFeed extends ConnectorBase
                     $parameters['uri'],
                     $fileUtility->getError()
             );
-            if (TYPO3_DLOG || $this->extConf['debug']) {
-                GeneralUtility::devLog($message, $this->extKey, 3);
-            }
-            throw new SourceErrorException(
+            $this->raiseError(
                     $message,
-                    1299257894
+                    1299257894,
+                    [],
+                    SourceErrorException::class
             );
         }
         // Check if the current charset is the same as the file encoding
         // Don't do the check if no encoding was defined
-        // TODO: add automatic encoding detection by the reading the encoding attribute in the XML header
+        // TODO: add automatic encoding detection by reading the encoding attribute in the XML header
         if (empty($parameters['encoding'])) {
             $encoding = '';
             $isSameCharset = true;
@@ -182,9 +176,9 @@ class ConnectorFeed extends ConnectorBase
         }
 
         // Process the result if any hook is registered
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processResponse'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processResponse'] as $className) {
-                $processor = GeneralUtility::getUserObj($className);
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] as $className) {
+                $processor = GeneralUtility::makeInstance($className);
                 $data = $processor->processResponse($data, $this);
             }
         }

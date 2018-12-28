@@ -10,31 +10,31 @@
  * writing. "version" and "dependencies" must not be touched!
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = array (
-  'title' => 'Connector service - XML Feed',
-  'description' => 'Connector service for XML files or RSS feeds',
-  'category' => 'services',
-  'version' => '2.2.3',
-  'state' => 'stable',
-  'uploadfolder' => 0,
-  'createDirs' => '',
-  'clearcacheonload' => 1,
-  'author' => 'Francois Suter (Cobweb)',
-  'author_email' => 'typo3@cobweb.ch',
-  'author_company' => '',
-  'constraints' =>
-  array (
-    'depends' =>
-    array (
-      'typo3' => '7.6.0-8.99.99',
-      'svconnector' => '3.2.3-0.0.0',
-    ),
-    'conflicts' =>
-    array (
-    ),
-    'suggests' =>
-    array (
-    ),
-  ),
-);
+$EM_CONF[$_EXTKEY] = [
+        'title' => 'Connector service - XML Feed',
+        'description' => 'Connector service for XML files or RSS feeds',
+        'category' => 'services',
+        'version' => '2.2.3',
+        'state' => 'stable',
+        'uploadfolder' => 0,
+        'createDirs' => '',
+        'clearcacheonload' => 1,
+        'author' => 'Francois Suter (Cobweb)',
+        'author_email' => 'typo3@cobweb.ch',
+        'author_company' => '',
+        'constraints' =>
+                [
+                        'depends' =>
+                                [
+                                        'typo3' => '7.6.0-9.99.99',
+                                        'svconnector' => '3.2.3-0.0.0',
+                                ],
+                        'conflicts' =>
+                                [
+                                ],
+                        'suggests' =>
+                                [
+                                ],
+                ],
+];
 

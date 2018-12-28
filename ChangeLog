@@ -1,3 +1,7 @@
+2018-12-28 Francois Suter (Cobweb)  <typo3@cobweb.ch>
+
+	* Drop compatibility with TYPO3 7, prepare for TYPO3, code cleanup, resolves #6
+
 2018-07-18 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
 	* Updated documentation regarding allowed absolute file paths

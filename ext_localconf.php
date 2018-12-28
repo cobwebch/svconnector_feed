@@ -9,7 +9,7 @@ if (!defined ('TYPO3_MODE')) {
         'connector',
         // Service key
         'tx_svconnectorfeed_sv1',
-		array(
+		[
 			'title' => 'RSS Feed connector',
 			'description' => 'Connector service to get RSS feeds',
 
@@ -23,5 +23,5 @@ if (!defined ('TYPO3_MODE')) {
 			'exec' => '',
 
 			'className' => \Cobweb\SvconnectorFeed\Service\ConnectorFeed::class,
-		)
+        ]
 );
