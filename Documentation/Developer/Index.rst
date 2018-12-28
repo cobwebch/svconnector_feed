@@ -17,7 +17,7 @@ easy task. The first step is to get the proper service object:
 .. code-block:: php
 
 	$services = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::findService('connector', 'feed');
-	if ($services === FALSE) {
+	if ($services === false) {
 		// Issue an error
 	} else {
 		$connector = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService('connector', 'feed');
@@ -38,13 +38,13 @@ in return. For example:
 
 .. code-block:: php
 
-	$parameters = array(
+	$parameters = [
 		'uri' => 'https://typo3.org/xml-feeds/rss.xml',
 		'encoding' => 'utf-8',
-	);
+	];
 	$data = $connector->fetchXML($parameters);
 
-This will return the XML from the feed as a string. The :code:`fetchRaw()` will return the same.
+This will return the XML from the feed as a string. The :code:`fetchRaw()` method will return the same.
 
 The :code:`fetchArray()` method returns an array version of the XML
 transformed using :code:`\Cobweb\Svconnector\Utility\ConnectorUtility::convertXmlToArray()`.

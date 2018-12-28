@@ -11,6 +11,6 @@
 Installation
 ------------
 
-Install this extension and you can start using it's API for reading
+Install this extension and you can start using its API for reading
 XML files inside your own code. It requires extension “svconnector”
 which provides the base for all connector services.
