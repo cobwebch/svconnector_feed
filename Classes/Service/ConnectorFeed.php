@@ -34,6 +34,16 @@ class ConnectorFeed extends ConnectorBase
     public $extensionKey = 'svconnector_feed';    // The extension key.
 
     /**
+     * Returns the class as a string. Seems to be needed by phpunit when an exception occurs during a test run.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return 'ConnectorFeed';
+    }
+
+    /**
      * Verifies that the connection is functional
      * In the case of this service, it is always the case
      * It might fail for a specific file, but it is always available in general
