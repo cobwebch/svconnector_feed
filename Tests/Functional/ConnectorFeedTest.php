@@ -20,11 +20,11 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Testcase for the CSV Connector service.
+ * Testcase for the Feed Connector service.
  *
  * @author Francois Suter <typo3@cobweb.ch>
  * @package TYPO3
- * @subpackage tx_svconnector_csv
+ * @subpackage tx_svconnector_feed
  */
 class ConnectorFeedTest extends FunctionalTestCase
 {
