@@ -4,7 +4,7 @@ if (!defined ('TYPO3_MODE')) {
 }
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
-		$_EXTKEY,
+		'svconnector_feed',
         // Service type
         'connector',
         // Service key

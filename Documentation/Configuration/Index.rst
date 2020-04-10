@@ -32,11 +32,8 @@ parameters:
 |                 |               |   :ref:`Connector Services <svconnector:developers-utilities-reading-files>`  |
 +-----------------+---------------+-------------------------------------------------------------------------------+
 | encoding        | string        | Encoding of the data found in the file. This value must match any of          |
-|                 |               | the encoding values or their synonyms found in class                          |
-|                 |               | :code:`\TYPO3\CMS\Core\Charset\CharsetConverter`.                             |
-|                 |               | Note that this means pretty much all the usual encodings.                     |
-|                 |               | If unsure look at array                                                       |
-|                 |               | :code:`\TYPO3\CMS\Core\Charset\CharsetConverter::synonyms`.                   |
+|                 |               | the encoding values recognized by the PHP libray "mbstring". See              |
+|                 |               | https://www.php.net/manual/en/mbstring.supported-encodings.php                |
 |                 |               |                                                                               |
 |                 |               | .. warning::                                                                  |
 |                 |               |                                                                               |

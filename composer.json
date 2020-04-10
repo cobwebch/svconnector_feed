@@ -19,7 +19,7 @@
 	"version": "2.3.0",
 	"require": {
 		"typo3/cms-core": ">=8.7.0,<11.0",
-		"cobweb/svconnector": ">=3.3.0"
+		"cobweb/svconnector": ">=3.4.0"
 	},
 	"replace": {
 		"svconnector_feed": "self.version",
