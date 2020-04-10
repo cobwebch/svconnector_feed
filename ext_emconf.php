@@ -19,8 +19,8 @@ $EM_CONF[$_EXTKEY] = [
         'uploadfolder' => 0,
         'createDirs' => '',
         'clearcacheonload' => 1,
-        'author' => 'Francois Suter (Cobweb)',
-        'author_email' => 'typo3@cobweb.ch',
+        'author' => 'Francois Suter (Idéative)',
+        'author_email' => 'typo3@ideative.ch',
         'author_company' => '',
         'constraints' =>
                 [
