@@ -1,6 +1,7 @@
 2020-04-12 Francois Suter (Idéative)  <typo3@ideative.ch>
 
 	* Implement new configuration check API, resolves #7
+	* Update documentation settings, resolves #8
 
 2020-04-10 Francois Suter (Idéative)  <typo3@ideative.ch>
 
