@@ -18,6 +18,7 @@ use Cobweb\Svconnector\Exception\SourceErrorException;
 use Cobweb\Svconnector\Service\ConnectorBase;
 use Cobweb\Svconnector\Utility\ConnectorUtility;
 use Cobweb\Svconnector\Utility\FileUtility;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -53,6 +54,22 @@ class ConnectorFeed extends ConnectorBase
     {
         parent::init();
         return true;
+    }
+
+    /**
+     * Checks the connector configuration and returns notices, warnings or errors, if any.
+     *
+     * @param array $parameters Connector call parameters
+     * @return array
+     */
+    public function checkConfiguration($parameters): array
+    {
+        $result = parent::checkConfiguration($parameters);
+        // The "uri" parameter is mandatory
+        if (empty($parameters['uri'])) {
+            $result[AbstractMessage::ERROR][] = $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:no_feed_defined');
+        }
+        return $result;
     }
 
     /**
@@ -137,9 +154,18 @@ class ConnectorFeed extends ConnectorBase
     {
 
         $this->logger->info('Call parameters', $parameters);
-        // Check if the feed's URI is defined
-        if (empty($parameters['uri'])) {
-            $message = $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:no_feed_defined');
+        // Check the configuration
+        $problems = $this->checkConfiguration($parameters);
+        // Log all issues and raise error if any
+        $this->logConfigurationCheck($problems);
+        if (count($problems[AbstractMessage::ERROR]) > 0) {
+            $message = '';
+            foreach ($problems[AbstractMessage::ERROR] as $problem) {
+                if ($message !== '') {
+                    $message .= "\n";
+                }
+                $message .= $problem;
+            }
             $this->raiseError(
                     $message,
                     1299257883,
