@@ -16,7 +16,7 @@
 			"Cobweb\\SvconnectorFeed\\": "Classes/"
 		}
 	},
-	"version": "2.3.0",
+	"version": "2.4.0",
 	"require": {
 		"typo3/cms-core": ">=8.7.0,<11.0",
 		"cobweb/svconnector": ">=3.4.0"
