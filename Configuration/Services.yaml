@@ -1,0 +1,12 @@
+# Configuration/Services.yaml
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Cobweb\SvconnectorFeed\:
+    resource: '../Classes/*'
+
+  Cobweb\SvconnectorFeed\Service\ConnectorFeed:
+    public: true
