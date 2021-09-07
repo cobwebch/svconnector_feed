@@ -84,7 +84,8 @@ class ConnectorFeed extends ConnectorBase
     {
         $result = $this->query($parameters);
         // Implement post-processing hook
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'])) {
+        $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] ?? null;
+        if (is_array($hooks)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $result = $processor->processRaw($result, $this);
@@ -106,7 +107,8 @@ class ConnectorFeed extends ConnectorBase
         // Get the feed, which is already in XML
         $xml = $this->query($parameters);
         // Implement post-processing hook
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'])) {
+        $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] ?? null;
+        if (is_array($hooks)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $xml = $processor->processXML($xml, $this);
@@ -132,7 +134,8 @@ class ConnectorFeed extends ConnectorBase
         $this->logger->info('Structured data', $result);
 
         // Implement post-processing hook
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'])) {
+        $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] ?? null;
+        if (is_array($hooks)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $result = $processor->processArray($result, $this);
@@ -211,7 +214,8 @@ class ConnectorFeed extends ConnectorBase
         }
 
         // Process the result if any hook is registered
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'])) {
+        $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] ?? null;
+        if (is_array($hooks)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $data = $processor->processResponse($data, $this);
