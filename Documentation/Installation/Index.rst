@@ -15,6 +15,17 @@ Install this extension and you can start using its API for reading
 XML files inside your own code. It requires extension “svconnector”
 which provides the base for all connector services.
 
+
+.. _installation-update-300:
+
+Updating to 3.0.0
+^^^^^^^^^^^^^^^^^
+
+Version 3.0.0 adds support for TYPO3 11 and PHP 8.0, while dropping support
+for TYPO3 8 and 9. Apart from that it does not contain other changes and
+the update process should be smooth.
+
+
 .. _installation-update-240:
 
 Updating to version 2.4.0
