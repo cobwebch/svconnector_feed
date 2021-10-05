@@ -1,40 +1,30 @@
 <?php
 
-/***************************************************************
- * Extension Manager/Repository config file for ext "svconnector_feed".
- *
- * Auto generated 05-04-2017 17:54
- *
- * Manual updates:
- * Only the data in the array - everything else is removed by next
- * writing. "version" and "dependencies" must not be touched!
- ***************************************************************/
-
 $EM_CONF[$_EXTKEY] = [
-        'title' => 'Connector service - XML Feed',
-        'description' => 'Connector service for XML files or RSS feeds',
-        'category' => 'services',
-        'version' => '2.4.1',
-        'state' => 'stable',
-        'uploadfolder' => 0,
-        'createDirs' => '',
-        'clearcacheonload' => 1,
-        'author' => 'Francois Suter (Idéative)',
-        'author_email' => 'typo3@ideative.ch',
-        'author_company' => '',
-        'constraints' =>
+    'title' => 'Connector service - XML Feed',
+    'description' => 'Connector service for XML files or RSS feeds',
+    'category' => 'services',
+    'version' => '3.0.0',
+    'state' => 'stable',
+    'uploadfolder' => 0,
+    'createDirs' => '',
+    'clearcacheonload' => 1,
+    'author' => 'Francois Suter (Idéative)',
+    'author_email' => 'typo3@ideative.ch',
+    'author_company' => '',
+    'constraints' =>
+        [
+            'depends' =>
                 [
-                        'depends' =>
-                                [
-                                        'typo3' => '10.4.99-11.99.99',
-                                        'svconnector' => '3.4.0-0.0.0',
-                                ],
-                        'conflicts' =>
-                                [
-                                ],
-                        'suggests' =>
-                                [
-                                ],
+                    'typo3' => '10.4.0-11.5.99',
+                    'svconnector' => '4.0.0-0.0.0',
                 ],
+            'conflicts' =>
+                [
+                ],
+            'suggests' =>
+                [
+                ],
+        ],
 ];
 
