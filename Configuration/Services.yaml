@@ -10,3 +10,5 @@ services:
 
   Cobweb\SvconnectorFeed\Service\ConnectorFeed:
     public: true
+    arguments:
+      - !tagged_iterator connector.service

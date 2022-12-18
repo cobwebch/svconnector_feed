@@ -23,15 +23,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Service that reads XML feeds for the "svconnector_feed" extension.
- *
- * @author Francois Suter (Cobweb) <typo3@cobweb.ch>
- * @package TYPO3
- * @subpackage tx_svconnectorfeed
  */
 class ConnectorFeed extends ConnectorBase
 {
-    public $prefixId = 'tx_svconnectorfeed_sv1';        // Same as class name
-    public $extensionKey = 'svconnector_feed';    // The extension key.
+    protected string $extensionKey = 'svconnector_feed';
+
+    protected string $type = 'feed';
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
 
     /**
      * Returns the class as a string. Seems to be needed by phpunit when an exception occurs during a test run.
@@ -43,6 +45,11 @@ class ConnectorFeed extends ConnectorBase
         return 'ConnectorFeed';
     }
 
+    public function getName(): string
+    {
+        return 'XML/RSS feed connector';
+    }
+
     /**
      * Verifies that the connection is functional
      * In the case of this service, it is always the case
@@ -50,9 +57,8 @@ class ConnectorFeed extends ConnectorBase
      *
      * @return boolean TRUE if the service is available
      */
-    public function init(): bool
+    public function isAvailable(): bool
     {
-        parent::init();
         return true;
     }
 
@@ -62,7 +68,7 @@ class ConnectorFeed extends ConnectorBase
      * @param array $parameters Connector call parameters
      * @return array
      */
-    public function checkConfiguration($parameters): array
+    public function checkConfiguration(array $parameters = []): array
     {
         $result = parent::checkConfiguration($parameters);
         // The "uri" parameter is mandatory
@@ -80,7 +86,7 @@ class ConnectorFeed extends ConnectorBase
      * @return mixed Server response
      * @throws \Exception
      */
-    public function fetchRaw($parameters)
+    public function fetchRaw(array $parameters = [])
     {
         $result = $this->query($parameters);
         // Implement post-processing hook
@@ -102,7 +108,7 @@ class ConnectorFeed extends ConnectorBase
      * @return string XML structure
      * @throws \Exception
      */
-    public function fetchXML($parameters): string
+    public function fetchXML(array $parameters = []): string
     {
         // Get the feed, which is already in XML
         $xml = $this->query($parameters);
@@ -125,7 +131,7 @@ class ConnectorFeed extends ConnectorBase
      * @return array PHP array
      * @throws \Exception
      */
-    public function fetchArray($parameters): array
+    public function fetchArray(array $parameters = []): array
     {
         // Get the data from the file
         $result = $this->query($parameters);
@@ -153,7 +159,7 @@ class ConnectorFeed extends ConnectorBase
      * @return mixed Content of the feed
      * @throws \Exception
      */
-    protected function query($parameters)
+    protected function query(array $parameters = [])
     {
 
         $this->logger->info('Call parameters', $parameters);

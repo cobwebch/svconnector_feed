@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cobweb\SvconnectorFeed\Unit\Tests;
 
 /*
@@ -16,40 +18,31 @@ namespace Cobweb\SvconnectorFeed\Unit\Tests;
  */
 
 use Cobweb\Svconnector\Domain\Repository\ConnectorRepository;
+use Cobweb\SvconnectorFeed\Service\ConnectorFeed;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the Feed Connector service.
- *
- * @author Francois Suter <typo3@cobweb.ch>
- * @package TYPO3
- * @subpackage tx_svconnector_feed
  */
 class ConnectorFeedTest extends FunctionalTestCase
 {
     protected $testExtensionsToLoad = [
-            'typo3conf/ext/svconnector',
-            'typo3conf/ext/svconnector_feed',
+        'typo3conf/ext/svconnector',
+        'typo3conf/ext/svconnector_feed',
     ];
 
-    /**
-     * @var \Cobweb\SvconnectorFeed\Service\ConnectorFeed
-     */
-    protected $subject;
+    protected ConnectorFeed $subject;
 
     /**
      * Sets up the test environment.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         try {
-            /** @var ConnectorRepository $connectorRepository */
-            $connectorRepository = GeneralUtility::makeInstance(ConnectorRepository::class);
-            $this->subject = $connectorRepository->findServiceByKey('tx_svconnectorfeed_sv1');
-        }
-        catch (\Exception $e) {
+            $this->subject = GeneralUtility::makeInstance(ConnectorFeed::class);
+        } catch (\Exception $e) {
             self::markTestSkipped($e->getMessage());
         }
     }
@@ -61,12 +54,12 @@ class ConnectorFeedTest extends FunctionalTestCase
      */
     public function sourceDataProvider(): array
     {
-        $data = [
-                'UTF-8 data' => [
-                        'parameters' => [
-                                'uri' => 'EXT:svconnector_feed/Tests/Functional/Fixtures/data_utf8.xml'
-                        ],
-                        'result' => <<<EOT
+        return [
+            'UTF-8 data' => [
+                'parameters' => [
+                    'uri' => 'EXT:svconnector_feed/Tests/Functional/Fixtures/data_utf8.xml'
+                ],
+                'result' => <<<EOT
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <items>
 	<item>
@@ -75,13 +68,13 @@ class ConnectorFeedTest extends FunctionalTestCase
 </items>
 EOT
 
+            ],
+            'ISO-8859-1 data' => [
+                'parameters' => [
+                    'uri' => 'EXT:svconnector_feed/Tests/Functional/Fixtures/data_latin1.xml',
+                    'encoding' => 'iso-8859-1'
                 ],
-                'ISO-8859-1 data' => [
-                        'parameters' => [
-                                'uri' => 'EXT:svconnector_feed/Tests/Functional/Fixtures/data_latin1.xml',
-                                'encoding' => 'iso-8859-1'
-                        ],
-                        'result' => <<<EOT
+                'result' => <<<EOT
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <items>
 	<item>
@@ -89,21 +82,20 @@ EOT
 	</item>
 </items>
 EOT
-                ]
+            ]
         ];
-        return $data;
     }
 
     /**
      * Reads test XML files and checks the resulting content against an expected structure.
      *
      * @param array $parameters List of connector parameters
-     * @param array $result Expected array structure
+     * @param string $result Expected array structure
      * @test
      * @dataProvider sourceDataProvider
      * @throws \Exception
      */
-    public function readingXmlFileIntoString($parameters, $result)
+    public function readingXmlFileIntoString(array $parameters, string $result): void
     {
         $data = $this->subject->fetchXML($parameters);
         self::assertSame($result, $data);
@@ -111,14 +103,14 @@ EOT
 
     /**
      * @test
-     * @expectedException \Cobweb\Svconnector\Exception\SourceErrorException
      */
-    public function readingUnknownFileThrowsException()
+    public function readingUnknownFileThrowsException(): void
     {
+        $this->expectException(\Cobweb\Svconnector\Exception\SourceErrorException::class);
         $this->subject->fetchXML(
-                [
-                        'filename' => 'foobar.xml'
-                ]
+            [
+                'filename' => 'foobar.xml'
+            ]
         );
     }
 }
