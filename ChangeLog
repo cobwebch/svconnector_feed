@@ -1,3 +1,8 @@
+2022-12-25 Francois Suter (Idéative)  <typo3@ideative.ch>
+
+	* Ensure compatibility with TYPO3 12, resolves #9
+	* Ensure compatibility with PHP 8.1
+
 2022-12-18 Francois Suter (Idéative)  <typo3@ideative.ch>
 
 	* Switch to new connector service registration API, resolves #10
