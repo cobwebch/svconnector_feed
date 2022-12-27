@@ -27,7 +27,7 @@ Feed/XML Connector Service
 		  xml, rss, feed, data import, fetch data
 
 	:Copyright:
-		2009-2021
+		2009-2023
 
 	:Author:
 		  François Suter (Idéative)
