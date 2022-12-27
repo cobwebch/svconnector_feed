@@ -16,6 +16,16 @@ XML files inside your own code. It requires extension “svconnector”
 which provides the base for all connector services.
 
 
+.. _installation-update-400:
+
+Updating to 4.0.0
+^^^^^^^^^^^^^^^^^
+
+Version 4.0.0 adds support for TYPO3 12 and PHP 8.1, while dropping support
+for TYPO3 10. It adapts to the new way of registering Connector Services.
+The update process should be smooth with "svconnector" version 5.0.0.
+
+
 .. _installation-update-300:
 
 Updating to 3.0.0
