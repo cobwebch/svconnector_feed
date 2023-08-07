@@ -19,8 +19,8 @@
 	},
 	"require": {
 		"typo3/cms-core": "^11.5 || ^12.4",
-		"php": "^7.4 || ^8.0 || ^8.1",
-		"cobweb/svconnector": "^5.0"
+		"php": "^7.4 || ^8.0 || ^8.1 || ^8.2",
+		"cobweb/svconnector": "^5.0 || ^5.1"
 	},
 	"replace": {
 		"typo3-ter/svconnector_feed": "self.version"
