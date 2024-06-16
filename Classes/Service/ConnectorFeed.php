@@ -18,7 +18,7 @@ use Cobweb\Svconnector\Exception\SourceErrorException;
 use Cobweb\Svconnector\Service\ConnectorBase;
 use Cobweb\Svconnector\Utility\ConnectorUtility;
 use Cobweb\Svconnector\Utility\FileUtility;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -73,7 +73,7 @@ class ConnectorFeed extends ConnectorBase
         $result = parent::checkConfiguration($parameters);
         // The "uri" parameter is mandatory
         if (empty($parameters['uri'])) {
-            $result[AbstractMessage::ERROR][] = $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:no_feed_defined');
+            $result[ContextualFeedbackSeverity::ERROR->value][] = $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:no_feed_defined');
         }
         return $result;
     }
@@ -167,9 +167,9 @@ class ConnectorFeed extends ConnectorBase
         $problems = $this->checkConfiguration($parameters);
         // Log all issues and raise error if any
         $this->logConfigurationCheck($problems);
-        if (count($problems[AbstractMessage::ERROR]) > 0) {
+        if (count($problems[ContextualFeedbackSeverity::ERROR->value]) > 0) {
             $message = '';
-            foreach ($problems[AbstractMessage::ERROR] as $problem) {
+            foreach ($problems[ContextualFeedbackSeverity::ERROR->value] as $problem) {
                 if ($message !== '') {
                     $message .= "\n";
                 }
