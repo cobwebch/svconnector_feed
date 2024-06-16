@@ -17,7 +17,7 @@ namespace Cobweb\SvconnectorFeed\Unit\Tests;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Cobweb\Svconnector\Domain\Repository\ConnectorRepository;
+use Cobweb\Svconnector\Exception\SourceErrorException;
 use Cobweb\SvconnectorFeed\Service\ConnectorFeed;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -39,7 +39,6 @@ class ConnectorFeedTest extends FunctionalTestCase
      */
     public function setUp(): void
     {
-        parent::setUp();
         try {
             $this->subject = GeneralUtility::makeInstance(ConnectorFeed::class);
         } catch (\Exception $e) {
@@ -106,7 +105,7 @@ EOT
      */
     public function readingUnknownFileThrowsException(): void
     {
-        $this->expectException(\Cobweb\Svconnector\Exception\SourceErrorException::class);
+        $this->expectException(SourceErrorException::class);
         $this->subject->fetchXML(
             [
                 'filename' => 'foobar.xml'

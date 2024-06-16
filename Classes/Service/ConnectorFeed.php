@@ -1,5 +1,6 @@
 <?php
-namespace Cobweb\SvconnectorFeed\Service;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +15,8 @@ namespace Cobweb\SvconnectorFeed\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace Cobweb\SvconnectorFeed\Service;
+
 use Cobweb\Svconnector\Exception\SourceErrorException;
 use Cobweb\Svconnector\Service\ConnectorBase;
 use Cobweb\Svconnector\Utility\ConnectorUtility;
@@ -24,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Service that reads XML feeds for the "svconnector_feed" extension.
  */
-class ConnectorFeed extends ConnectorBase
+class ConnectorFeed extends ConnectorBase implements \Stringable
 {
     protected string $extensionKey = 'svconnector_feed';
 
@@ -40,7 +43,7 @@ class ConnectorFeed extends ConnectorBase
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return 'ConnectorFeed';
     }
@@ -185,7 +188,7 @@ class ConnectorFeed extends ConnectorBase
 
         $headers = null;
         if (array_key_exists('useragent', $parameters)) {
-            $headers = array('User-Agent: ' . $parameters['useragent']);
+            $headers = ['User-Agent: ' . $parameters['useragent']];
         }
 
         $fileUtility = GeneralUtility::makeInstance(FileUtility::class);
