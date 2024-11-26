@@ -1,6 +1,7 @@
 2024-11-26 Francois Suter (Idéative)  <typo3@ideative.ch>
 
-    *  Adapt to changes in svconnector, resolves #12
+    * Adapt to changes in svconnector, resolves #12
+    * Verify compatibility with TYPO3 13 ELTS, resolves #11
 
 2024-06-16 Francois Suter (Idéative)  <typo3@ideative.ch>
 
