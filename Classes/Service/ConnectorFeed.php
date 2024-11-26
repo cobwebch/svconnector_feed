@@ -17,6 +17,11 @@ declare(strict_types=1);
 
 namespace Cobweb\SvconnectorFeed\Service;
 
+use Cobweb\Svconnector\Attribute\AsConnectorService;
+use Cobweb\Svconnector\Event\ProcessArrayDataEvent;
+use Cobweb\Svconnector\Event\ProcessRawDataEvent;
+use Cobweb\Svconnector\Event\ProcessResponseEvent;
+use Cobweb\Svconnector\Event\ProcessXmlDataEvent;
 use Cobweb\Svconnector\Exception\SourceErrorException;
 use Cobweb\Svconnector\Service\ConnectorBase;
 use Cobweb\Svconnector\Utility\ConnectorUtility;
@@ -27,31 +32,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Service that reads XML feeds for the "svconnector_feed" extension.
  */
-class ConnectorFeed extends ConnectorBase implements \Stringable
+#[AsConnectorService(type: 'feed', name: 'XML/RSS feed connector')]
+class ConnectorFeed extends ConnectorBase
 {
     protected string $extensionKey = 'svconnector_feed';
-
-    protected string $type = 'feed';
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * Returns the class as a string. Seems to be needed by phpunit when an exception occurs during a test run.
-     *
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return 'ConnectorFeed';
-    }
-
-    public function getName(): string
-    {
-        return 'XML/RSS feed connector';
-    }
 
     /**
      * Verifies that the connection is functional
@@ -73,10 +57,12 @@ class ConnectorFeed extends ConnectorBase implements \Stringable
      */
     public function checkConfiguration(array $parameters = []): array
     {
-        $result = parent::checkConfiguration($parameters);
+        $result = parent::checkConfiguration(...func_get_args());
         // The "uri" parameter is mandatory
-        if (empty($parameters['uri'])) {
-            $result[ContextualFeedbackSeverity::ERROR->value][] = $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:no_feed_defined');
+        if (empty($this->parameters['uri'])) {
+            $result[ContextualFeedbackSeverity::ERROR->value][] = $this->sL(
+                'LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:no_feed_defined'
+            );
         }
         return $result;
     }
@@ -91,17 +77,28 @@ class ConnectorFeed extends ConnectorBase implements \Stringable
      */
     public function fetchRaw(array $parameters = [])
     {
-        $result = $this->query($parameters);
+        // Call to parent is used only to raise flag about argument deprecation
+        // TODO: remove once method signature is changed in next major version
+        parent::fetchRaw(...func_get_args());
+
+        $result = $this->query();
         // Implement post-processing hook
         $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] ?? null;
-        if (is_array($hooks)) {
+        if (is_array($hooks) && count($hooks) > 0) {
+            trigger_error(
+                'Using the processRaw hook is deprecated. Use the ProcessRawDataEvent instead',
+                E_USER_DEPRECATED
+            );
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $result = $processor->processRaw($result, $this);
             }
         }
-
-        return $result;
+        /** @var ProcessRawDataEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ProcessRawDataEvent($result, $this)
+        );
+        return $event->getData();
     }
 
     /**
@@ -113,18 +110,30 @@ class ConnectorFeed extends ConnectorBase implements \Stringable
      */
     public function fetchXML(array $parameters = []): string
     {
+        // Call to parent is used only to raise flag about argument deprecation
+        // TODO: remove once method signature is changed in next major version
+        parent::fetchXML(...func_get_args());
+
         // Get the feed, which is already in XML
-        $xml = $this->query($parameters);
+        $xml = $this->query();
         // Implement post-processing hook
         $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] ?? null;
-        if (is_array($hooks)) {
+        if (is_array($hooks) && count($hooks) > 0) {
+            trigger_error(
+                'Using the processXML hook is deprecated. Use the ProcessXmlDataEvent instead',
+                E_USER_DEPRECATED
+            );
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $xml = $processor->processXML($xml, $this);
             }
         }
+        /** @var ProcessXmlDataEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ProcessXmlDataEvent($xml, $this)
+        );
 
-        return $xml;
+        return $event->getData();
     }
 
     /**
@@ -136,21 +145,33 @@ class ConnectorFeed extends ConnectorBase implements \Stringable
      */
     public function fetchArray(array $parameters = []): array
     {
+        // Call to parent is used only to raise flag about argument deprecation
+        // TODO: remove once method signature is changed in next major version
+        parent::fetchArray(...func_get_args());
+
         // Get the data from the file
-        $result = $this->query($parameters);
+        $result = $this->query();
         $result = ConnectorUtility::convertXmlToArray($result);
 
         $this->logger->info('Structured data', $result);
 
         // Implement post-processing hook
         $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] ?? null;
-        if (is_array($hooks)) {
+        if (is_array($hooks) && count($hooks) > 0) {
+            trigger_error(
+                'Using the processArray hook is deprecated. Use the ProcessArrayDataEvent instead',
+                E_USER_DEPRECATED
+            );
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $result = $processor->processArray($result, $this);
             }
         }
-        return $result;
+        /** @var ProcessArrayDataEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ProcessArrayDataEvent($result, $this)
+        );
+        return $event->getData();
     }
 
     /**
@@ -164,10 +185,13 @@ class ConnectorFeed extends ConnectorBase implements \Stringable
      */
     protected function query(array $parameters = [])
     {
+        // Call to parent is used only to raise flag about argument deprecation
+        // TODO: remove once method signature is changed in next major version
+        parent::query(...func_get_args());
 
-        $this->logger->info('Call parameters', $parameters);
+        $this->logger->info('Call parameters', $this->parameters);
         // Check the configuration
-        $problems = $this->checkConfiguration($parameters);
+        $problems = $this->checkConfiguration();
         // Log all issues and raise error if any
         $this->logConfigurationCheck($problems);
         if (count($problems[ContextualFeedbackSeverity::ERROR->value]) > 0) {
@@ -187,16 +211,16 @@ class ConnectorFeed extends ConnectorBase implements \Stringable
         }
 
         $headers = null;
-        if (array_key_exists('useragent', $parameters)) {
-            $headers = ['User-Agent: ' . $parameters['useragent']];
+        if (array_key_exists('useragent', $this->parameters)) {
+            $headers = ['User-Agent: ' . $this->parameters['useragent']];
         }
 
         $fileUtility = GeneralUtility::makeInstance(FileUtility::class);
-        $data = $fileUtility->getFileContent($parameters['uri'], $headers);
+        $data = $fileUtility->getFileContent($this->parameters['uri'], $headers);
         if ($data === false) {
             $message = sprintf(
                     $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:feed_not_fetched'),
-                    $parameters['uri'],
+                $this->parameters['uri'],
                     $fileUtility->getError()
             );
             $this->raiseError(
@@ -209,12 +233,12 @@ class ConnectorFeed extends ConnectorBase implements \Stringable
         // Check if the current charset is the same as the file encoding
         // Don't do the check if no encoding was defined
         // TODO: add automatic encoding detection by reading the encoding attribute in the XML header
-        if (empty($parameters['encoding'])) {
+        if (empty($this->parameters['encoding'])) {
             $encoding = '';
             $isSameCharset = true;
         } else {
             // Standardize charset name and compare
-            $encoding = $parameters['encoding'];
+            $encoding = $this->parameters['encoding'];
             $isSameCharset = $this->getCharset() === $encoding;
         }
         // If the charset is not the same, convert data
@@ -224,14 +248,22 @@ class ConnectorFeed extends ConnectorBase implements \Stringable
 
         // Process the result if any hook is registered
         $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] ?? null;
-        if (is_array($hooks)) {
+        if (is_array($hooks) && count($hooks) > 0) {
+            trigger_error(
+                'Using the processResponse hook is deprecated. Use the ProcessResponseEvent instead',
+                E_USER_DEPRECATED
+            );
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $data = $processor->processResponse($data, $this);
             }
         }
+        /** @var ProcessResponseEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ProcessResponseEvent($data, $this)
+        );
 
         // Return the result
-        return $data;
+        return $event->getResponse();
     }
 }
