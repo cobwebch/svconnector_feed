@@ -54,7 +54,7 @@ class ConnectorFeedTest extends FunctionalTestCase
      *
      * @return array
      */
-    public function sourceDataProvider(): array
+    public static function sourceDataProvider(): array
     {
         return [
             'UTF-8 data' => [
