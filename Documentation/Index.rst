@@ -3,7 +3,7 @@
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. include:: Includes.txt
+.. include:: /Includes.rst.txt
 
 
 .. _start:
@@ -27,7 +27,7 @@ Feed/XML Connector Service
 		  xml, rss, feed, data import, fetch data
 
 	:Copyright:
-		2009-2023
+		2009-2024
 
 	:Author:
 		  François Suter (Idéative)
@@ -36,8 +36,9 @@ Feed/XML Connector Service
 		  typo3@ideative.ch
 
 	:License:
-		This document is published under the Open Content License
-		available from http://www.opencontent.org/opl.shtml
+        This document is published under the
+        `Creative Commons BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`__
+        license.
 
 	:Rendered:
 		|today|
@@ -58,7 +59,6 @@ a GNU/GPL CMS/Framework available from `www.typo3.org <http://www.typo3.org/>`_.
    Installation/Index
    Configuration/Index
    Developer/Index
-   Targets
 
 .. Meta Menu
 

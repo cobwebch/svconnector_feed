@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cobweb\SvconnectorFeed\Unit\Tests;
+namespace Cobweb\SvconnectorFeed\Functional\Tests;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -19,15 +19,17 @@ namespace Cobweb\SvconnectorFeed\Unit\Tests;
 
 use Cobweb\Svconnector\Exception\SourceErrorException;
 use Cobweb\SvconnectorFeed\Service\ConnectorFeed;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Testcase for the Feed Connector service.
  */
 class ConnectorFeedTest extends FunctionalTestCase
 {
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/svconnector',
         'typo3conf/ext/svconnector_feed',
     ];
@@ -39,6 +41,7 @@ class ConnectorFeedTest extends FunctionalTestCase
      */
     public function setUp(): void
     {
+        parent::setUp();
         try {
             $this->subject = GeneralUtility::makeInstance(ConnectorFeed::class);
         } catch (\Exception $e) {
@@ -56,7 +59,7 @@ class ConnectorFeedTest extends FunctionalTestCase
         return [
             'UTF-8 data' => [
                 'parameters' => [
-                    'uri' => 'EXT:svconnector_feed/Tests/Functional/Fixtures/data_utf8.xml'
+                    'uri' => 'EXT:svconnector_feed/Tests/Functional/Fixtures/data_utf8.xml',
                 ],
                 'result' => <<<EOT
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -71,7 +74,7 @@ EOT
             'ISO-8859-1 data' => [
                 'parameters' => [
                     'uri' => 'EXT:svconnector_feed/Tests/Functional/Fixtures/data_latin1.xml',
-                    'encoding' => 'iso-8859-1'
+                    'encoding' => 'iso-8859-1',
                 ],
                 'result' => <<<EOT
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
@@ -81,35 +84,34 @@ EOT
 	</item>
 </items>
 EOT
-            ]
+            ],
         ];
     }
 
     /**
-     * Reads test XML files and checks the resulting content against an expected structure.
+     * Read test XML files and check the resulting content against an expected structure.
      *
      * @param array $parameters List of connector parameters
      * @param string $result Expected array structure
-     * @test
-     * @dataProvider sourceDataProvider
      * @throws \Exception
      */
+    #[Test] #[DataProvider('sourceDataProvider')]
     public function readingXmlFileIntoString(array $parameters, string $result): void
     {
-        $data = $this->subject->fetchXML($parameters);
+        $this->subject->setParameters($parameters);
+        $data = $this->subject->fetchXML();
         self::assertSame($result, $data);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function readingUnknownFileThrowsException(): void
     {
         $this->expectException(SourceErrorException::class);
-        $this->subject->fetchXML(
+        $this->subject->setParameters(
             [
-                'filename' => 'foobar.xml'
+                'filename' => 'foobar.xml',
             ]
         );
+        $this->subject->fetchXML();
     }
 }
