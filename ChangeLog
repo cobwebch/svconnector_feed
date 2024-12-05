@@ -1,6 +1,7 @@
 2024-12-05 Francois Suter (Idéative)  <typo3@ideative.ch>
 
     * Update documentation, automate building
+    * Support passing headers and method when fetching data
 
 2024-11-26 Francois Suter (Idéative)  <typo3@ideative.ch>
 

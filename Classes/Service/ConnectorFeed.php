@@ -42,7 +42,7 @@ class ConnectorFeed extends ConnectorBase
      * In the case of this service, it is always the case
      * It might fail for a specific file, but it is always available in general
      *
-     * @return boolean TRUE if the service is available
+     * @return bool TRUE if the service is available
      */
     public function isAvailable(): bool
     {
@@ -203,31 +203,40 @@ class ConnectorFeed extends ConnectorBase
                 $message .= $problem;
             }
             $this->raiseError(
-                    $message,
-                    1299257883,
-                    [],
-                    SourceErrorException::class
+                $message,
+                1299257883,
+                [],
+                SourceErrorException::class
             );
         }
 
-        $headers = null;
+        // TODO: deprecate and use $this->parameters['headers'] instead
+        $headers = $this->parameters['headers'] ?? [];
         if (array_key_exists('useragent', $this->parameters)) {
-            $headers = ['User-Agent: ' . $this->parameters['useragent']];
+            trigger_error(
+                '"useragent" property is deprecated. Use headers property instead.',
+                E_USER_DEPRECATED
+            );
+            $headers['User-Agent'] = $this->parameters['useragent'];
         }
 
         $fileUtility = GeneralUtility::makeInstance(FileUtility::class);
-        $data = $fileUtility->getFileContent($this->parameters['uri'], $headers);
+        $data = $fileUtility->getFileContent(
+            $this->parameters['uri'],
+            count($headers) > 0 ? $headers : null,
+            $this->parameters['method'] ?? 'GET'
+        );
         if ($data === false) {
             $message = sprintf(
-                    $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:feed_not_fetched'),
+                $this->sL('LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:feed_not_fetched'),
                 $this->parameters['uri'],
-                    $fileUtility->getError()
+                $fileUtility->getError()
             );
             $this->raiseError(
-                    $message,
-                    1299257894,
-                    [],
-                    SourceErrorException::class
+                $message,
+                1299257894,
+                [],
+                SourceErrorException::class
             );
         }
         // Check if the current charset is the same as the file encoding
