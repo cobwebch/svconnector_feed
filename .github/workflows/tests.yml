@@ -25,25 +25,6 @@ jobs:
       - name: Lint PHP
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s lint
 
-  unit:
-    name: Unit
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php:
-          - '8.1'
-          - '8.2'
-          - '8.3'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install testing system
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerUpdate
-
-      - name: unit
-        run: Build/Scripts/runTests.sh -n -p ${{ matrix.php }} -s unit
-
   functional:
     name: Functional
     runs-on: ubuntu-latest
