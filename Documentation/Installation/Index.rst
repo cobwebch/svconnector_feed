@@ -24,7 +24,7 @@ Updating to 5.0.0
 Version 5.0.0 adds support for TYPO3 13 and PHP 8.4, while dropping support
 for TYPO3 11 and PHP 7.4 and 8.0.
 
-Events have been introduce to replace hooks. Existing hooks are still in place,
+Events have been introduced to replace hooks. Existing hooks are still in place,
 but are deprecated and events should now be used instead
 (see the :ref:`svconnector manual <svconnector:developers-events>` for reference).
 

@@ -12,10 +12,14 @@ Developer's manual
 ------------------
 
 Reading a XML file using the Feed/XML connector service is a really
-easy task. The first step is to get the proper service object:
+easy task. The first step is to get the proper service object with the desired parameters:
 
 .. code-block:: php
 
+   $parameters = [
+      'uri' => 'https://typo3.org/xml-feeds/rss.xml',
+      'encoding' => 'utf-8',
+   ];
    $registry = GeneralUtility::makeInstance(\Cobweb\Svconnector\Registry\ConnectorRegistry::class);
    $connector = $registry->getServiceForType('feed');
 
@@ -23,17 +27,12 @@ An additional step could be to check if the service is indeed available,
 by calling :php:`$connector->isAvailable()`, although - in this particular
 case - the Feed/XML connector service is always available.
 
-The next step is simply to call the appropriate method from the API –
-with the right parameters – depending on which format you want to have
+The next step is simply to call the appropriate method from the API depending on which format you want to have
 in return. For example:
 
 .. code-block:: php
 
-	$parameters = [
-		'uri' => 'https://typo3.org/xml-feeds/rss.xml',
-		'encoding' => 'utf-8',
-	];
-	$data = $connector->fetchXML($parameters);
+   $data = $connector->fetchXML($parameters);
 
 This will return the XML from the feed as a string. The :code:`fetchRaw()` method will return the same.
 
