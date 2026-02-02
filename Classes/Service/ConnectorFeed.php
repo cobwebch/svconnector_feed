@@ -51,13 +51,10 @@ class ConnectorFeed extends ConnectorBase
 
     /**
      * Checks the connector configuration and returns notices, warnings or errors, if any.
-     *
-     * @param array $parameters Connector call parameters
-     * @return array
      */
-    public function checkConfiguration(array $parameters = []): array
+    public function checkConfiguration(): array
     {
-        $result = parent::checkConfiguration(...func_get_args());
+        $result = parent::checkConfiguration();
         // The "uri" parameter is mandatory
         if (empty($this->parameters['uri'])) {
             $result[ContextualFeedbackSeverity::ERROR->value][] = $this->sL(
@@ -71,30 +68,11 @@ class ConnectorFeed extends ConnectorBase
      * This method calls the query method and returns the result as is,
      * i.e. the XML from the feed, but without any additional work performed on it
      *
-     * @param array $parameters Parameters for the call
-     * @return mixed Server response
      * @throws \Exception
      */
-    public function fetchRaw(array $parameters = [])
+    public function fetchRaw(): mixed
     {
-        // Call to parent is used only to raise flag about argument deprecation
-        // TODO: remove once method signature is changed in next major version
-        parent::fetchRaw(...func_get_args());
-
         $result = $this->query();
-        // Implement post-processing hook
-        $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] ?? null;
-        if (is_array($hooks) && count($hooks) > 0) {
-            trigger_error(
-                'Using the processRaw hook is deprecated. Use the ProcessRawDataEvent instead',
-                E_USER_DEPRECATED
-            );
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] as $className) {
-                $processor = GeneralUtility::makeInstance($className);
-                $result = $processor->processRaw($result, $this);
-            }
-        }
-        /** @var ProcessRawDataEvent $event */
         $event = $this->eventDispatcher->dispatch(
             new ProcessRawDataEvent($result, $this)
         );
@@ -104,31 +82,12 @@ class ConnectorFeed extends ConnectorBase
     /**
      * This method calls the query and returns the results from the response as an XML structure
      *
-     * @param array $parameters Parameters for the call
-     * @return string XML structure
      * @throws \Exception
      */
-    public function fetchXML(array $parameters = []): string
+    public function fetchXML(): string
     {
-        // Call to parent is used only to raise flag about argument deprecation
-        // TODO: remove once method signature is changed in next major version
-        parent::fetchXML(...func_get_args());
-
         // Get the feed, which is already in XML
         $xml = $this->query();
-        // Implement post-processing hook
-        $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] ?? null;
-        if (is_array($hooks) && count($hooks) > 0) {
-            trigger_error(
-                'Using the processXML hook is deprecated. Use the ProcessXmlDataEvent instead',
-                E_USER_DEPRECATED
-            );
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] as $className) {
-                $processor = GeneralUtility::makeInstance($className);
-                $xml = $processor->processXML($xml, $this);
-            }
-        }
-        /** @var ProcessXmlDataEvent $event */
         $event = $this->eventDispatcher->dispatch(
             new ProcessXmlDataEvent($xml, $this)
         );
@@ -139,35 +98,16 @@ class ConnectorFeed extends ConnectorBase
     /**
      * This method calls the query and returns the results from the response as a PHP array
      *
-     * @param array $parameters Parameters for the call
-     * @return array PHP array
      * @throws \Exception
      */
-    public function fetchArray(array $parameters = []): array
+    public function fetchArray(): array
     {
-        // Call to parent is used only to raise flag about argument deprecation
-        // TODO: remove once method signature is changed in next major version
-        parent::fetchArray(...func_get_args());
-
         // Get the data from the file
         $result = $this->query();
         $result = ConnectorUtility::convertXmlToArray($result);
 
         $this->logger->info('Structured data', $result);
 
-        // Implement post-processing hook
-        $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] ?? null;
-        if (is_array($hooks) && count($hooks) > 0) {
-            trigger_error(
-                'Using the processArray hook is deprecated. Use the ProcessArrayDataEvent instead',
-                E_USER_DEPRECATED
-            );
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] as $className) {
-                $processor = GeneralUtility::makeInstance($className);
-                $result = $processor->processArray($result, $this);
-            }
-        }
-        /** @var ProcessArrayDataEvent $event */
         $event = $this->eventDispatcher->dispatch(
             new ProcessArrayDataEvent($result, $this)
         );
@@ -177,18 +117,10 @@ class ConnectorFeed extends ConnectorBase
     /**
      * Reads the content of the XML feed defined in the parameter and returns it as an array.
      *
-     * NOTE: This method does not implement the "processParameters" hook, as it does not make sense in this case.
-     *
-     * @param array $parameters Parameters for the call
-     * @return mixed Content of the feed
      * @throws \Exception
      */
-    protected function query(array $parameters = [])
+    protected function query(): mixed
     {
-        // Call to parent is used only to raise flag about argument deprecation
-        // TODO: remove once method signature is changed in next major version
-        parent::query(...func_get_args());
-
         $this->logger->info('Call parameters', $this->parameters);
         // Check the configuration
         $problems = $this->checkConfiguration();
@@ -210,16 +142,7 @@ class ConnectorFeed extends ConnectorBase
             );
         }
 
-        // TODO: deprecate and use $this->parameters['headers'] instead
         $headers = $this->parameters['headers'] ?? [];
-        if (array_key_exists('useragent', $this->parameters)) {
-            trigger_error(
-                '"useragent" property is deprecated. Use headers property instead.',
-                E_USER_DEPRECATED
-            );
-            $headers['User-Agent'] = $this->parameters['useragent'];
-        }
-
         $fileUtility = GeneralUtility::makeInstance(FileUtility::class);
         $data = $fileUtility->getFileContent(
             $this->parameters['uri'],
@@ -241,33 +164,18 @@ class ConnectorFeed extends ConnectorBase
         }
         // Check if the current charset is the same as the file encoding
         // Don't do the check if no encoding was defined
-        // TODO: add automatic encoding detection by reading the encoding attribute in the XML header
         if (empty($this->parameters['encoding'])) {
-            $encoding = '';
+            $encoding = null;
             $isSameCharset = true;
         } else {
-            // Standardize charset name and compare
             $encoding = $this->parameters['encoding'];
             $isSameCharset = $this->getCharset() === $encoding;
         }
         // If the charset is not the same, convert data
         if (!$isSameCharset) {
-            $data = $this->getCharsetConverter()->conv($data, $encoding, $this->getCharset());
+            $data = mb_convert_encoding($data, $this->getCharset(), $encoding);
         }
 
-        // Process the result if any hook is registered
-        $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] ?? null;
-        if (is_array($hooks) && count($hooks) > 0) {
-            trigger_error(
-                'Using the processResponse hook is deprecated. Use the ProcessResponseEvent instead',
-                E_USER_DEPRECATED
-            );
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] as $className) {
-                $processor = GeneralUtility::makeInstance($className);
-                $data = $processor->processResponse($data, $this);
-            }
-        }
-        /** @var ProcessResponseEvent $event */
         $event = $this->eventDispatcher->dispatch(
             new ProcessResponseEvent($data, $this)
         );

@@ -24,7 +24,7 @@ Type
 
 Description
   URI of the XML file to read. This may be any of the following syntaxes:
-                                                                              |
+
   - absolute file path: :file:`/var/foo/web/fileadmin/import/bar.xml` (within the TYPO3 root path or :code:`TYPO3_CONF_VARS[BE][lockRootPath]`)
   - file path relative to the TYPO3 root: :file:`fileadmin/import/foo.xml`
   - file path using :code:`EXT:`: :file:`EXT:foo/Resources/Private/Data/bar.xml`
@@ -90,27 +90,3 @@ Description
      which is used in this case relies on the SimpleXML library, which
      already takes care of the encoding conversion. To avoid a double
      encoding just ignore this property.
-
-
-.. _configuration-useragent:
-
-useragent
-^^^^^^^^^
-
-Type
-  string
-
-Description
-  User agent to fake. This is sometimes necessary to bypass access
-  restrictions on some sites. Don't include the "User-Agent:" part of the header.
-
-  **Examples:**
-
-  Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US;rv:1.9.2.13)
-
-  Gecko/20101203 Firefox/3.6.13
-
-  .. warning::
-
-     This property is deprecated. Pass the user agent as part of the :ref:`headers <configuration-headers>`
-     instead.
