@@ -71,10 +71,23 @@ class ConnectorFeedTest extends FunctionalTestCase
 EOT
 
             ],
-            'ISO-8859-1 data' => [
+            'ISO-8859-1 data with explicit encoding' => [
                 'parameters' => [
                     'uri' => 'EXT:svconnector_feed/Tests/Functional/Fixtures/data_latin1.xml',
                     'encoding' => 'iso-8859-1',
+                ],
+                'result' => <<<EOT
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<items>
+	<item>
+		<name>Porte interdùm lacîna c'est euismod.</name>
+	</item>
+</items>
+EOT
+            ],
+            'ISO-8859-1 data with implicit encoding' => [
+                'parameters' => [
+                    'uri' => 'EXT:svconnector_feed/Tests/Functional/Fixtures/data_latin1.xml',
                 ],
                 'result' => <<<EOT
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>

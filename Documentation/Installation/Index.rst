@@ -29,6 +29,8 @@ It makes it possible to use any of the request options supported by Guzzle HTTP.
 The "headers" parameter has been deprecated. Headers should be passed as part of the
 "requestOptions" instead.
 
+Encoding is now guessed from the declaration of the XML source, if defined.
+
 
 .. _installation-update-500:
 

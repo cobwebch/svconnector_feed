@@ -183,13 +183,20 @@ class ConnectorFeed extends ConnectorBase
             );
         }
         // Check if the current charset is the same as the file encoding
-        // Don't do the check if no encoding was defined
-        if (empty($this->parameters['encoding'])) {
-            $encoding = null;
-            $isSameCharset = true;
-        } else {
+        // Use explicitly defined encoding first, then try getting encoding from XML declaration
+        if (!empty($this->parameters['encoding'])) {
             $encoding = $this->parameters['encoding'];
             $isSameCharset = $this->getCharset() === $encoding;
+        } else {
+            $dom = new \DOMDocument();
+            $dom->loadXML($data, LIBXML_PARSEHUGE);
+            if (!empty($dom->xmlEncoding)) {
+                $encoding = $dom->xmlEncoding;
+                $isSameCharset = $this->getCharset() === $encoding;
+            } else {
+                $encoding = null;
+                $isSameCharset = true;
+            }
         }
         // If the charset is not the same, convert data
         if (!$isSameCharset) {

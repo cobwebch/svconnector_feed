@@ -117,11 +117,6 @@ Description
   the encoding values recognized by the PHP libray "mbstring". See
   https://www.php.net/manual/en/mbstring.supported-encodings.php
 
-  .. warning::
-
-     If your are aiming for the array format (i.e. calling
-     :code:`fetchArray()`), you should not define this property. Indeed the
-     :code:`\Cobweb\Svconnector\Utility\ConnectorUtility::convertXmlToArray()`
-     which is used in this case relies on the SimpleXML library, which
-     already takes care of the encoding conversion. To avoid a double
-     encoding just ignore this property.
+  It is not necessary to define this parameter if the XML source contains an
+  encoding in its declaration. It will automatically be retrieved. However,
+  if this parameter is defined, it supersedes the encoding from the XML declaration.
