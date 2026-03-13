@@ -13,7 +13,7 @@
     <project
             title="XML/RSS feed Connector Service"
             release="5.0.0"
-            copyright="2009-2025"
+            copyright="2009-2026"
     />
     <inventory id="svconnector" url="https://docs.typo3.org/p/cobweb/svconnector/main/en-us/"/>
 </guides>

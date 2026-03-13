@@ -46,6 +46,36 @@ Description
   This parameter is optional and the method defaults to GET.
 
 
+.. _configuration-request-options:
+
+requestOptions
+^^^^^^^^^^^^^^
+
+Type
+  array
+
+Description
+  Key-value pairs of options that can be passed to the request. Any of the
+  `request options supported by Guzzle HTTP <https://docs.guzzlephp.org/en/stable/request-options.html>`_
+  may be used.
+
+  .. note::
+
+     This makes sense only when using fully qualified URLs in the :ref:`uir parameter <configuration-uri>`.
+
+Example
+  Passing a "page" information in the body and setting an accepted mime type in the headers.
+
+  .. code-block:: php
+
+      'requestOptions' => [
+         'body' => '{"page": 1}',
+         'headers' => [
+            'Accept' => 'application/xml',
+         ],
+      ],
+
+
 .. _configuration-headers:
 
 headers
@@ -56,6 +86,11 @@ Type
 
 Description
   Key-value pairs of headers that should be sent along with the request.
+
+  .. warning::
+
+     This parameter has been deprecated. It will be removed in the next major version.
+     Use :ref:`requestOptions <configuration-request-options>` instead.
 
 Example
   Example headers for setting an alternate user agent and defining what reponse

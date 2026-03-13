@@ -61,6 +61,12 @@ class ConnectorFeed extends ConnectorBase
                 'LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:no_feed_defined'
             );
         }
+        // The "requestOptions" parameter is expected to be an array
+        if (isset($this->parameters['requestOptions']) && !is_array($this->parameters['requestOptions'])) {
+            $result[ContextualFeedbackSeverity::WARNING->value][] = $this->sL(
+                'LLL:EXT:svconnector_feed/Resources/Private/Language/locallang.xlf:request_options_must_be_array'
+            );
+        }
         return $result;
     }
 
@@ -142,12 +148,26 @@ class ConnectorFeed extends ConnectorBase
             );
         }
 
-        $headers = $this->parameters['headers'] ?? [];
+        // Define the request options
+        $requestOptions = $this->parameters['requestOptions'] ?? [];
+        // Include deprecated headers property
+        // TODO: remove in next major version
+        if (is_array($this->parameters['headers'] ?? null) && count($this->parameters['headers']) > 0) {
+            $requestOptions = array_merge_recursive($requestOptions, ['headers' => $this->parameters['headers']]);
+            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+            $caller = end($backtrace);
+            $callerLocation = sprintf('file %s, line %d', $caller['file'], $caller['line']);
+
+            trigger_error(sprintf(
+                'Property "headers" is deprecated. Pass headers as part of the "requestOptions" property instead. Location: %s',
+                $callerLocation,
+            ), E_USER_DEPRECATED);
+        }
         $fileUtility = GeneralUtility::makeInstance(FileUtility::class);
         $data = $fileUtility->getFileContent(
             $this->parameters['uri'],
-            count($headers) > 0 ? $headers : null,
-            $this->parameters['method'] ?? 'GET'
+            $this->parameters['method'] ?? 'GET',
+            $requestOptions
         );
         if ($data === false) {
             $message = sprintf(
