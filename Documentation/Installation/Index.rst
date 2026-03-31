@@ -31,6 +31,8 @@ The "headers" parameter has been deprecated. Headers should be passed as part of
 
 Encoding is now guessed from the declaration of the XML source, if defined.
 
+Hooks have been entirely removed. Use only events.
+
 
 .. _installation-update-500:
 
