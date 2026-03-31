@@ -21,7 +21,7 @@ which provides the base for all connector services.
 Updating to 6.0.0
 ^^^^^^^^^^^^^^^^^
 
-Version 6.0.0 adds support for TYPO3 13 and PHP 8.5, while dropping support
+Version 6.0.0 adds support for TYPO3 14 and PHP 8.5, while dropping support
 for TYPO3 12 and PHP 8.1.
 
 A new parameter :ref:`requestOptions <configuration-request-options>` is available.
