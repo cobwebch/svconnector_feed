@@ -2,6 +2,7 @@
 /.Build/
 /Build/rector/.Build/
 /.cache/
+/var/
 composer.json.testing
 composer.lock
 /public/

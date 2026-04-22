@@ -17,10 +17,13 @@ namespace Cobweb\SvconnectorFeed\Functional\Tests;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Cobweb\Svconnector\Domain\Model\Dto\CallContext;
+use Cobweb\Svconnector\Domain\Model\Dto\ConnectionInformation;
 use Cobweb\Svconnector\Exception\SourceErrorException;
 use Cobweb\SvconnectorFeed\Service\ConnectorFeed;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -43,14 +46,19 @@ class ConnectorFeedTest extends FunctionalTestCase
     {
         parent::setUp();
         try {
-            $this->subject = GeneralUtility::makeInstance(ConnectorFeed::class);
+            $this->subject = GeneralUtility::makeInstance(
+                ConnectorFeed::class,
+                $this->getContainer()->get(EventDispatcherInterface::class),
+                $this->getMockBuilder(CallContext::class)->getMock(),
+                $this->getMockBuilder(ConnectionInformation::class)->getMock()
+            );
         } catch (\Exception $e) {
             self::markTestSkipped($e->getMessage());
         }
     }
 
     /**
-     * Provides references to CSV files to read and expected output.
+     * Provides references to CSV files to read an expected output.
      *
      * @return array
      */

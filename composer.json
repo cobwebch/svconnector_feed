@@ -1,7 +1,7 @@
 {
   "name": "cobweb/svconnector_feed",
   "type": "typo3-cms-extension",
-  "description": "Connector service for XML files or RSS feeds",
+  "description": "Connector service XML – Connector service for XML files or RSS feeds",
   "license": [
     "GPL-2.0-or-later"
   ],
@@ -18,21 +18,26 @@
     }
   },
   "require": {
-    "typo3/cms-core": "^13.4 || ^14.1",
+    "typo3/cms-core": "^13.4 || ^14.3",
     "php": "^8.2 || ^8.3 || ^8.4 || ^8.5",
-    "cobweb/svconnector": "dev-develop",
-    "typo3/coding-standards": "*"
+    "cobweb/svconnector": "^7.0"
   },
   "require-dev": {
-    "ergebnis/composer-normalize": "^2.48",
-    "friendsofphp/php-cs-fixer": "^3.88",
-    "typo3/testing-framework": "^9.x-dev",
+    "ergebnis/composer-normalize": "^2.51",
+    "friendsofphp/php-cs-fixer": "^3.95",
+    "typo3/coding-standards": "*",
+    "typo3/testing-framework": "^9.5",
     "phpstan/phpstan": "^2.1"
   },
   "extra": {
     "typo3/cms": {
       "extension-key": "svconnector_feed",
-      "web-dir": ".Build/web"
+      "web-dir": ".Build/web",
+      "version": "6.0.0",
+      "Package": {
+        "providesPackages": {
+        }
+      }
     }
   },
   "replace": {
